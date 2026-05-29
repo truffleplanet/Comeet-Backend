@@ -56,11 +56,6 @@ public enum ErrorCode {
 	MENU_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "M-003", "메뉴 이름은 필수 입력값입니다."),
 	MENU_PRICE_REQUIRED(HttpStatus.BAD_REQUEST, "M-004", "메뉴 가격은 필수 입력값입니다."),
 	MENU_CATEGORY_REQUIRED(HttpStatus.BAD_REQUEST, "M-005", "메뉴 카테고리는 필수 입력값입니다."),
-	MENU_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M-006", "메뉴 저장에 실패했습니다."),
-	MENU_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M-007", "메뉴 업데이트에 실패했습니다."),
-	MENU_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M-008", "메뉴 삭제에 실패했습니다."),
-	MENU_BEAN_MAPPING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M-009", "메뉴-원두 연결에 실패했습니다."),
-	MENU_BEAN_UNMAPPING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M-010", "메뉴-원두 연결 해제에 실패했습니다."),
 	MENU_BEAN_ALREADY_MAPPED(HttpStatus.CONFLICT, "M-011", "해당 원두는 이미 메뉴에 연결되어 있습니다."),
 	MENU_ACCESS_DENIED(HttpStatus.FORBIDDEN, "M-012", "메뉴에 대한 접근 권한이 없습니다."),
 	MENU_ALREADY_DELETED(HttpStatus.CONFLICT, "M-013", "이미 삭제된 메뉴입니다."),
@@ -77,7 +72,6 @@ public enum ErrorCode {
 	/**
 	 * Visit Error
 	 */
-	VISIT_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "V-001", "방문 기록 저장에 실패했습니다."),
 	INVALID_VISIT_REQUEST(HttpStatus.BAD_REQUEST, "V-002", "방문 기록 요청 데이터가 유효하지 않습니다."),
 	LOCATION_REQUIRED(HttpStatus.BAD_REQUEST, "V-003", "위치 정보가 필요합니다."),
 	COORDINATES_REQUIRED(HttpStatus.BAD_REQUEST, "V-004", "위도와 경도는 필수입니다."),
@@ -90,14 +84,10 @@ public enum ErrorCode {
 	 */
 	INVALID_REVIEW_REQUEST(HttpStatus.BAD_REQUEST, "R-001", "리뷰 요청 데이터가 유효하지 않습니다."),
 	REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R-002", "리뷰 기록을 찾을 수 없습니다."),
-	REVIEW_UPDATE_FAILED(HttpStatus.CONFLICT, "R-003", "리뷰 업데이트에 실패했습니다."),
-	REVIEW_SOFT_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-004", "리뷰 SOFT DELETE에 실패했습니다."),
 	ALREADY_DELETED_REVIEW(HttpStatus.BAD_REQUEST, "R-005", "이미 삭제 처리된 리뷰입니다."),
 	REVIEW_ALREADY_EXISTS_FOR_VISIT(HttpStatus.CONFLICT, "R-006", "해당 방문에 대한 리뷰가 이미 존재합니다."),
 	CUPPING_NOTE_NOT_FOUND(HttpStatus.NOT_FOUND, "R-007", "커핑 노트를 찾을 수 없습니다."),
 	CUPPING_NOTE_ALREADY_EXISTS(HttpStatus.CONFLICT, "R-008", "해당 리뷰에 대한 커핑 노트가 이미 존재합니다."),
-	CUPPING_NOTE_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-009", "커핑 노트 저장에 실패했습니다."),
-	CUPPING_NOTE_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-010", "커핑 노트 업데이트에 실패했습니다."),
 
 	/**
 	 * Roastery Error
@@ -105,9 +95,6 @@ public enum ErrorCode {
 	ROASTERY_NOT_FOUND(HttpStatus.NOT_FOUND, "RO-001", "로스터리를 찾을 수 없습니다."),
 	ROASTERY_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "RO-002", "로스터리 이름은 필수 입력값입니다."),
 	INVALID_ROASTERY_REQUEST(HttpStatus.BAD_REQUEST, "RO-003", "로스터리 요청 데이터가 유효하지 않습니다."),
-	ROASTERY_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "RO-004", "로스터리 저장에 실패했습니다."),
-	ROASTERY_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "RO-005", "로스터리 업데이트에 실패했습니다."),
-	ROASTERY_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "RO-006", "로스터리 삭제에 실패했습니다."),
 	ROASTERY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "RO-007", "로스터리에 대한 접근 권한이 없습니다."),
 
 	/**
@@ -116,12 +103,7 @@ public enum ErrorCode {
 	BEAN_NOT_FOUND(HttpStatus.NOT_FOUND, "B-001", "원두를 찾을 수 없습니다."),
 	BEAN_COUNTRY_REQUIRED(HttpStatus.BAD_REQUEST, "B-002", "원두 생산 국가는 필수 입력값입니다."),
 	INVALID_BEAN_REQUEST(HttpStatus.BAD_REQUEST, "B-003", "원두 요청 데이터가 유효하지 않습니다."),
-	BEAN_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-004", "원두 저장에 실패했습니다."),
-	BEAN_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-005", "원두 업데이트에 실패했습니다."),
-	BEAN_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-006", "원두 삭제에 실패했습니다."),
 	BEAN_ACCESS_DENIED(HttpStatus.FORBIDDEN, "B-007", "원두에 대한 접근 권한이 없습니다."),
-	BEAN_FLAVOR_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-008", "원두-플레이버 매핑 저장에 실패했습니다."),
-	BEAN_FLAVOR_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-009", "원두-플레이버 매핑 삭제에 실패했습니다."),
 
 	/**
 	 * File Error
@@ -177,8 +159,6 @@ public enum ErrorCode {
 	 */
 	BATCH_NOT_FOUND(HttpStatus.NOT_FOUND, "BA-001", "배치 작업을 찾을 수 없습니다."),
 	BATCH_ALREADY_COMPLETED(HttpStatus.CONFLICT, "BA-002", "이미 완료된 배치 작업입니다."),
-	BATCH_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "BA-003", "배치 진행 상황 저장에 실패했습니다."),
-	BATCH_LOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "BA-004", "배치 진행 상황 조회에 실패했습니다."),
 
 	/**
 	 * Bookmark Error
