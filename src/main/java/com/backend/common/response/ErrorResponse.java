@@ -15,6 +15,7 @@ import lombok.Builder;
 @Builder
 public record ErrorResponse(
 	HttpStatus status,
+	String code,
 	String message,
 	String method,
 	String requestURI,
@@ -24,6 +25,7 @@ public record ErrorResponse(
 	public static ErrorResponse of(ErrorCode errorCode, HttpServletRequest request) {
 		return ErrorResponse.builder()
 			.status(errorCode.getHttpStatus())
+			.code(errorCode.getCode())
 			.message(errorCode.getMessage())
 			.method(request.getMethod())
 			.requestURI(request.getRequestURI())
@@ -34,6 +36,7 @@ public record ErrorResponse(
 	public static ErrorResponse of(HttpServletRequest request, ErrorCode errorCode, final String errorMessage) {
 		return ErrorResponse.builder()
 			.status(errorCode.getHttpStatus())
+			.code(errorCode.getCode())
 			.message(errorMessage)
 			.method(request.getMethod())
 			.requestURI(request.getRequestURI())
