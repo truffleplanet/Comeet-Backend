@@ -3,7 +3,7 @@ package com.backend.domain.user.service.facade;
 import org.springframework.stereotype.Service;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.UserException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.user.dto.request.UserRegisterReqDto;
 import com.backend.domain.user.dto.request.UserRoleUpdateReqDto;
 import com.backend.domain.user.dto.request.UserUpdateReqDto;
@@ -48,7 +48,7 @@ public class UserFacadeService {
 			if (!reqDto.nickname().equals(currentUser.nickname())) {
 				NicknameDuplicateResDto duplicateCheck = queryService.checkNicknameDuplicate(reqDto.nickname());
 				if (duplicateCheck.exists()) {
-					throw new UserException(ErrorCode.NICKNAME_DUPLICATED);
+					throw new BusinessException(ErrorCode.NICKNAME_DUPLICATED);
 				}
 			}
 		}
@@ -61,11 +61,14 @@ public class UserFacadeService {
 		UserInfoResDto currentUser = queryService.findById(userId);
 
 		if (Role.isNotActiveUser(currentUser.role())) {
-			throw new UserException(ErrorCode.ROLE_CHANGE_NOT_ALLOWED);
+			throw new BusinessException(ErrorCode.ROLE_CHANGE_NOT_ALLOWED);
 		}
 
 		if (reqDto.role() != Role.USER && reqDto.role() != Role.MANAGER) {
 			throw new UserException(ErrorCode.INVALID_ROLE);
+			throw new BusinessException(ErrorCode.INVALID_ROLE);
+		}
+
 		}
 
 		commandService.updateRole(userId, reqDto);

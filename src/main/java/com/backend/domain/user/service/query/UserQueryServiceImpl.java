@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.UserException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.user.converter.UserConverter;
 import com.backend.domain.user.dto.response.NicknameDuplicateResDto;
 import com.backend.domain.user.dto.response.UserInfoResDto;
@@ -28,7 +28,7 @@ public class UserQueryServiceImpl implements UserQueryService {
 	@Override
 	public UserInfoResDto findById(final Long userId) {
 		User user = queryMapper.findById(userId)
-			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 		log.info("[User] 사용자 조회 완료 - Id: {}", user.getId());
 		return UserConverter.toResponse(user);
 	}
@@ -50,6 +50,6 @@ public class UserQueryServiceImpl implements UserQueryService {
 	public User findUnRegisterUserById(final Long userId) {
 		log.info("[User] 사용자 조회 - userId: {}", userId);
 		return queryMapper.findById(userId)
-			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 	}
 }

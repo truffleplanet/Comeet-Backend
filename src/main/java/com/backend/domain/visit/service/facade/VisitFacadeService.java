@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.VisitException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.util.GeoUtils;
 import com.backend.common.util.PageUtils;
 import com.backend.domain.menu.entity.Menu;
@@ -47,7 +47,7 @@ public class VisitFacadeService {
 		Visit visit = visitFactory.create(user, reqDto, isVerified);
 
 		if (visitCommandService.save(visit) == 0) {
-			throw new VisitException(ErrorCode.VISIT_SAVE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 
 		if (isVerified) {

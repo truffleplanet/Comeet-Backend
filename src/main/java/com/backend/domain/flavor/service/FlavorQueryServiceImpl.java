@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.FlavorException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.flavor.entity.Flavor;
 import com.backend.domain.flavor.mapper.query.FlavorQueryMapper;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
@@ -39,7 +39,7 @@ public class FlavorQueryServiceImpl implements FlavorQueryService {
 	@Override
 	public List<Flavor> findFlavorsByReviewId(final Long reviewId) {
 		if (reviewId == null) {
-			throw new FlavorException(ErrorCode.INVALID_REVIEW_REQUEST);
+			throw new BusinessException(ErrorCode.INVALID_REVIEW_REQUEST);
 		}
 		List<Flavor> flavors = queryMapper.findAllByReviewId(reviewId);
 		log.info("[Review] Flavor 조회 완료 - review ID: {}, 조회성공: {}건", reviewId, flavors.size());

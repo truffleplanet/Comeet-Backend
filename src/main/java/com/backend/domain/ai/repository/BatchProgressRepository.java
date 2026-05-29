@@ -6,7 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.AiException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.ai.entity.BatchProgress;
 
 import lombok.AccessLevel;
@@ -31,7 +31,7 @@ public class BatchProgressRepository {
 				progress.getBatchId(), progress.getCompleted().get(), progress.getTotal());
 		} catch (Exception e) {
 			log.error("[Batch Progress] 저장 실패 - batchId: {}", progress.getBatchId(), e);
-			throw new AiException(ErrorCode.BATCH_SAVE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 	}
 
@@ -43,10 +43,10 @@ public class BatchProgressRepository {
 			if (value instanceof BatchProgress batchProgress) {
 				return batchProgress;
 			}
-			throw new AiException(ErrorCode.BATCH_NOT_FOUND);
+			throw new BusinessException(ErrorCode.BATCH_NOT_FOUND);
 		} catch (Exception e) {
 			log.error("[Batch Progress] 조회 실패 - batchId: {}", batchId, e);
-			throw new AiException(ErrorCode.BATCH_LOAD_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 	}
 

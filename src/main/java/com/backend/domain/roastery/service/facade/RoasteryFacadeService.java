@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.RoasteryException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.util.PageUtils;
 import com.backend.domain.roastery.converter.RoasteryConverter;
 import com.backend.domain.roastery.dto.request.RoasteryCreateReqDto;
@@ -30,7 +30,7 @@ public class RoasteryFacadeService {
 		Roastery roastery = roasteryFactory.create(reqDto);
 		int affectedRows = roasteryCommandService.insert(roastery);
 		if (affectedRows == 0) {
-			throw new RoasteryException(ErrorCode.ROASTERY_SAVE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 		return RoasteryConverter.toRoasteryResDto(roastery);
 	}
@@ -41,7 +41,7 @@ public class RoasteryFacadeService {
 		Roastery updatedRoastery = roasteryFactory.createForUpdate(existingRoastery, reqDto);
 		int affectedRows = roasteryCommandService.update(updatedRoastery);
 		if (affectedRows == 0) {
-			throw new RoasteryException(ErrorCode.ROASTERY_UPDATE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 		return RoasteryConverter.toRoasteryResDto(updatedRoastery);
 	}

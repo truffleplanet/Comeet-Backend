@@ -10,7 +10,7 @@ import com.backend.common.config.property.S3Property;
 import com.backend.common.enums.FileExtension;
 import com.backend.common.enums.FileType;
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.S3FileException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.util.FileUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -80,7 +80,7 @@ public class S3FileUploader implements FileUploader {
 
 	private void validateFileExtensions(FileType type, FileExtension extension) {
 		if (!type.isSupportedExtension(extension)) {
-			throw new S3FileException(ErrorCode.INVALID_FILE_EXTENSION);
+			throw new BusinessException(ErrorCode.INVALID_FILE_EXTENSION);
 		}
 	}
 
@@ -89,7 +89,7 @@ public class S3FileUploader implements FileUploader {
 			s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 		} catch (IOException e) {
 			log.error("[S3] 파일 업로드 에러 bucket: {}, key: {}", putObjectRequest.bucket(), putObjectRequest.key());
-			throw new S3FileException(ErrorCode.IMAGE_UPLOAD_FAILED);
+			throw new BusinessException(ErrorCode.IMAGE_UPLOAD_FAILED);
 		}
 	}
 }

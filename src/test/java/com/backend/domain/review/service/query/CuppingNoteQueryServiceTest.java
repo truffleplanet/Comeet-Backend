@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.ReviewException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.bean.enums.RoastingLevel;
 import com.backend.domain.review.entity.CuppingNote;
 import com.backend.domain.review.mapper.query.CuppingNoteQueryMapper;
@@ -81,10 +81,10 @@ class CuppingNoteQueryServiceTest {
 
 		// when & then
 		assertThatThrownBy(() -> cuppingNoteQueryService.findByReviewId(testReviewId))
-			.isInstanceOf(ReviewException.class)
+			.isInstanceOf(BusinessException.class)
 			.satisfies(exception -> {
-				ReviewException reviewException = (ReviewException)exception;
-				assertThat(reviewException.getErrorCode()).isEqualTo(ErrorCode.CUPPING_NOTE_NOT_FOUND);
+				BusinessException businessException = (BusinessException)exception;
+				assertThat(businessException.getErrorCode()).isEqualTo(ErrorCode.CUPPING_NOTE_NOT_FOUND);
 			});
 
 		verify(queryMapper, times(1)).findByReviewId(testReviewId);

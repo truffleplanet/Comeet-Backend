@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.ReviewException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.review.dto.common.StoreRatingStatsDto;
 import com.backend.domain.review.entity.Review;
 import com.backend.domain.review.mapper.query.ReviewQueryMapper;
@@ -28,7 +28,7 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
 	@Override
 	public Review findById(final Long reviewId) {
 		return queryMapper.findById(reviewId)
-			.orElseThrow(() -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
 	}
 
 	@Override

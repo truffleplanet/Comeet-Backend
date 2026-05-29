@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.StoreException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.util.GeoUtils;
 import com.backend.common.util.StringUtils;
 import com.backend.domain.menu.dto.request.MenuCreateReqDto;
@@ -123,7 +123,7 @@ public class StoreFacadeService {
 			);
 
 		if (isDuplicate) {
-			throw new StoreException(ErrorCode.STORE_ALREADY_EXISTS);
+			throw new BusinessException(ErrorCode.STORE_ALREADY_EXISTS);
 		}
 	}
 

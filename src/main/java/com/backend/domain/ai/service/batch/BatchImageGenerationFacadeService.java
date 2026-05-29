@@ -16,7 +16,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.AiException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.ai.converter.BatchConverter;
 import com.backend.domain.ai.dto.response.BatchImageGenerationResDto;
 import com.backend.domain.ai.dto.response.BatchProgressResDto;
@@ -108,7 +108,7 @@ public class BatchImageGenerationFacadeService {
 	}
 
 	@Retryable(
-		retryFor = {AiException.class},
+		retryFor = {BusinessException.class},
 		backoff = @Backoff(delay = 5000)
 	)
 	private void processUserImage(final String batchId, final Long userId) {
@@ -124,12 +124,12 @@ public class BatchImageGenerationFacadeService {
 			log.info("[Batch Image] 이미지 생성 성공 - userId: {}, passportId: {}, imageUrl: {}",
 				userId, passport.getId(), imageUrl);
 
-		} catch (AiException e) {
+		} catch (BusinessException e) {
 			log.error("[Batch Image] AI 이미지 생성 실패 - userId: {}", userId, e);
 			throw e;
 		} catch (Exception e) {
 			log.error("[Batch Image] 예상치 못한 오류 - userId: {}", userId, e);
-			throw new AiException(ErrorCode.AI_IMAGE_GENERATION_FAILED);
+			throw new BusinessException(ErrorCode.AI_IMAGE_GENERATION_FAILED);
 		}
 	}
 
@@ -138,7 +138,7 @@ public class BatchImageGenerationFacadeService {
 			return String.format(passportImagePrompt.getContentAsString(StandardCharsets.UTF_8),
 				passport.getOriginSequence());
 		} catch (IOException e) {
-			throw new AiException(ErrorCode.USER_PROMPT_REQUIRED);
+			throw new BusinessException(ErrorCode.USER_PROMPT_REQUIRED);
 		}
 	}
 

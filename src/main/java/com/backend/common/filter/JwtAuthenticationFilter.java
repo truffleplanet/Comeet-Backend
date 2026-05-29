@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,7 +17,7 @@ import com.backend.common.auth.constants.AuthConstant;
 import com.backend.common.auth.jwt.JwtTokenProvider;
 import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.AuthException;
+import com.backend.common.error.exception.BusinessException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -73,8 +74,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(
-		HttpServletRequest request, HttpServletResponse response,
-		FilterChain filterChain
+		HttpServletRequest request, @NonNull HttpServletResponse response,
+		@NonNull FilterChain filterChain
 	) throws ServletException, IOException {
 
 		String requestURI = request.getRequestURI();
@@ -189,7 +190,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private String getBearerToken(String authorizationHeader) {
 		if (authorizationHeader == null || !authorizationHeader.startsWith(AuthConstant.BEARER)) {
-			throw new AuthException(ErrorCode.MALFORMED_TOKEN_EXCEPTION);
+			throw new BusinessException(ErrorCode.MALFORMED_TOKEN_EXCEPTION);
 		}
 		return authorizationHeader.replace(AuthConstant.BEARER, "");
 	}

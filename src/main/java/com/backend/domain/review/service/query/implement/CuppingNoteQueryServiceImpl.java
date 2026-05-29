@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.ReviewException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.review.entity.CuppingNote;
 import com.backend.domain.review.mapper.query.CuppingNoteQueryMapper;
 import com.backend.domain.review.service.query.CuppingNoteQueryService;
@@ -29,7 +29,7 @@ public class CuppingNoteQueryServiceImpl implements CuppingNoteQueryService {
 			})
 			.orElseThrow(() -> {
 				log.warn("[CuppingNote] 커핑 노트 조회 실패 - reviewId: {}", reviewId);
-				return new ReviewException(ErrorCode.CUPPING_NOTE_NOT_FOUND);
+				return new BusinessException(ErrorCode.CUPPING_NOTE_NOT_FOUND);
 			});
 	}
 

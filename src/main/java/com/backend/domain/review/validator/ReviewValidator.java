@@ -3,7 +3,7 @@ package com.backend.domain.review.validator;
 import org.springframework.stereotype.Component;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.ReviewException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.validator.Validator;
 import com.backend.domain.review.entity.Review;
 
@@ -16,19 +16,19 @@ public class ReviewValidator implements Validator<Review> {
 
 	private void validateNotNull(final Review review) {
 		if (review == null) {
-			throw new ReviewException(ErrorCode.INVALID_REVIEW_REQUEST);
+			throw new BusinessException(ErrorCode.INVALID_REVIEW_REQUEST);
 		}
 	}
 
 	public void validateReviewBelongsToUser(final Review review, final Long userId) {
 		if (!review.getUserId().equals(userId)) {
-			throw new ReviewException(ErrorCode.ACCESS_DENIED);
+			throw new BusinessException(ErrorCode.ACCESS_DENIED);
 		}
 	}
 
 	public void validateReviewNotDeleted(final Review review) {
 		if (review.getDeletedAt() != null) {
-			throw new ReviewException(ErrorCode.ALREADY_DELETED_REVIEW);
+			throw new BusinessException(ErrorCode.ALREADY_DELETED_REVIEW);
 		}
 	}
 }

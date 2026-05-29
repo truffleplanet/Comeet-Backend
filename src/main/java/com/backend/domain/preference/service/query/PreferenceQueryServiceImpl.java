@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.PreferenceException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.preference.entity.UserPreference;
 import com.backend.domain.preference.mapper.query.PreferenceQueryMapper;
 
@@ -27,7 +27,7 @@ public class PreferenceQueryServiceImpl implements PreferenceQueryService {
 	@Override
 	public UserPreference getByUserId(Long userId) {
 		return preferenceQueryMapper.findByUserId(userId)
-			.orElseThrow(() -> new PreferenceException(ErrorCode.PREFERENCE_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.PREFERENCE_NOT_FOUND));
 	}
 
 	@Override

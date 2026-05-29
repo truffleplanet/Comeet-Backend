@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.AiException;
-import com.backend.common.error.exception.PassportException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.passport.entity.Passport;
 import com.backend.domain.passport.mapper.query.PassportQueryMapper;
 import com.backend.domain.passport.service.query.PassportQueryService;
@@ -31,7 +30,7 @@ public class PassportQueryServiceImpl implements PassportQueryService {
 		log.info("[Passport] 여권 조회 : passportId={}", passportId);
 		Passport passport = passportQueryMapper.findById(passportId);
 		if (passport == null) {
-			throw new PassportException(ErrorCode.PASSPORT_NOT_FOUND);
+			throw new BusinessException(ErrorCode.PASSPORT_NOT_FOUND);
 		}
 		return passport;
 	}
@@ -63,7 +62,7 @@ public class PassportQueryServiceImpl implements PassportQueryService {
 	@Override
 	public Passport findLatestByUserId(final Long userId) {
 		Passport passport = passportQueryMapper.findLatestByUserId(userId).
-			orElseThrow(() -> new AiException(ErrorCode.PASSPORT_NOT_FOUND));
+			orElseThrow(() -> new BusinessException(ErrorCode.PASSPORT_NOT_FOUND));
 		log.info("[Passport] 최신 여권 조회 : userId={}", userId);
 		return passport;
 	}

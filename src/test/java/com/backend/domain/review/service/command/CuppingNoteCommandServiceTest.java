@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.ReviewException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.bean.enums.RoastingLevel;
 import com.backend.domain.review.entity.CuppingNote;
 import com.backend.domain.review.mapper.command.CuppingNoteCommandMapper;
@@ -81,10 +81,10 @@ class CuppingNoteCommandServiceTest {
 
 		// when & then
 		assertThatThrownBy(() -> cuppingNoteCommandService.insert(testCuppingNote))
-			.isInstanceOf(ReviewException.class)
+			.isInstanceOf(BusinessException.class)
 			.satisfies(exception -> {
-				ReviewException reviewException = (ReviewException)exception;
-				assertThat(reviewException.getErrorCode()).isEqualTo(ErrorCode.CUPPING_NOTE_SAVE_FAILED);
+				BusinessException businessException = (BusinessException)exception;
+				assertThat(businessException.getErrorCode()).isEqualTo(ErrorCode.DATABASE_ERROR);
 			});
 
 		verify(commandMapper, times(1)).insert(testCuppingNote);
@@ -112,10 +112,10 @@ class CuppingNoteCommandServiceTest {
 
 		// when & then
 		assertThatThrownBy(() -> cuppingNoteCommandService.update(testCuppingNote))
-			.isInstanceOf(ReviewException.class)
+			.isInstanceOf(BusinessException.class)
 			.satisfies(exception -> {
-				ReviewException reviewException = (ReviewException)exception;
-				assertThat(reviewException.getErrorCode()).isEqualTo(ErrorCode.CUPPING_NOTE_UPDATE_FAILED);
+				BusinessException businessException = (BusinessException)exception;
+				assertThat(businessException.getErrorCode()).isEqualTo(ErrorCode.DATABASE_ERROR);
 			});
 
 		verify(commandMapper, times(1)).update(testCuppingNote);

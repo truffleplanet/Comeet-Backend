@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.backend.common.config.property.GeminiProperty;
 import com.backend.common.enums.FileType;
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.AiException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.s3.service.S3FileUploader;
 import com.backend.domain.ai.dto.GeneratedImage;
 import com.backend.domain.ai.dto.ImageGenerationRequest;
@@ -51,7 +51,7 @@ public class GeminiImageGenerationService implements ImageGenerationService {
 			return responseParser.parseImageResponse(responseStream);
 		} catch (Exception e) {
 			log.error("[AI] 이미지 생성 중 오류 발생 - prompt: {}", request.prompt(), e);
-			throw new AiException(ErrorCode.AI_IMAGE_GENERATION_FAILED);
+			throw new BusinessException(ErrorCode.AI_IMAGE_GENERATION_FAILED);
 		}
 	}
 

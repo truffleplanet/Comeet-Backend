@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.BeanException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.bean.entity.Bean;
 import com.backend.domain.bean.mapper.query.BeanQueryMapper;
 import com.backend.domain.bean.service.query.BeanQueryService;
@@ -26,7 +26,7 @@ public class BeanQueryServiceImpl implements BeanQueryService {
 	@Override
 	public Bean findById(final Long beanId) {
 		Bean bean = queryMapper.findById(beanId)
-			.orElseThrow(() -> new BeanException(ErrorCode.BEAN_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.BEAN_NOT_FOUND));
 		log.info("[Bean] 원두 조회 - ID: {}", bean.getId());
 		return bean;
 	}

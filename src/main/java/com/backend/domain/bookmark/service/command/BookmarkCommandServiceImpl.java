@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.BookmarkException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.bookmark.converter.BookmarkConverter;
 import com.backend.domain.bookmark.dto.response.BookmarkItemResDto;
 import com.backend.domain.bookmark.entity.BookmarkFolder;
@@ -38,7 +38,7 @@ public class BookmarkCommandServiceImpl implements BookmarkCommandService {
 
 		if (affectedRows == 0) {
 			log.error("[Bookmark] 폴더 수정 실패 - ID: {}", folder.getId());
-			throw new BookmarkException(ErrorCode.BOOKMARK_FOLDER_NOT_FOUND);
+			throw new BusinessException(ErrorCode.BOOKMARK_FOLDER_NOT_FOUND);
 		}
 
 		log.info("[Bookmark] 폴더 수정 완료 - ID: {}", folder.getId());
@@ -51,7 +51,7 @@ public class BookmarkCommandServiceImpl implements BookmarkCommandService {
 
 		if (affectedRows == 0) {
 			log.error("[Bookmark] 폴더 삭제 실패 - ID: {}", folderId);
-			throw new BookmarkException(ErrorCode.BOOKMARK_FOLDER_NOT_FOUND);
+			throw new BusinessException(ErrorCode.BOOKMARK_FOLDER_NOT_FOUND);
 		}
 
 		log.info("[Bookmark] 폴더 삭제 완료 - ID: {}", folderId);
@@ -72,7 +72,7 @@ public class BookmarkCommandServiceImpl implements BookmarkCommandService {
 
 		if (affectedRows == 0) {
 			log.error("[Bookmark] 카페 삭제 실패 - folderId: {}, storeId: {}", folderId, storeId);
-			throw new BookmarkException(ErrorCode.BOOKMARK_ITEM_NOT_FOUND);
+			throw new BusinessException(ErrorCode.BOOKMARK_ITEM_NOT_FOUND);
 		}
 
 		log.info("[Bookmark] 카페 삭제 완료 - folderId: {}, storeId: {}", folderId, storeId);

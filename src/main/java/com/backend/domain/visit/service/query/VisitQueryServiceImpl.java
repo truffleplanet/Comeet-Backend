@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.VisitException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.visit.entity.Visit;
 import com.backend.domain.visit.mapper.query.VisitQueryMapper;
 
@@ -26,7 +26,7 @@ public class VisitQueryServiceImpl implements VisitQueryService {
 	@Override
 	public Visit findById(final Long visitId) {
 		Visit visit = queryMapper.findById(visitId)
-			.orElseThrow(() -> new VisitException(ErrorCode.VISIT_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.VISIT_NOT_FOUND));
 		log.info("[Visit] 방문 기록 상세 조회 id : {}", visit.getId());
 		return visit;
 	}

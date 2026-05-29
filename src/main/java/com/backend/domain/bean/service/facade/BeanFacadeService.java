@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.BeanException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.util.PageUtils;
 import com.backend.domain.bean.converter.BeanConverter;
 import com.backend.domain.bean.dto.common.BeanFlavorDto;
@@ -59,7 +59,7 @@ public class BeanFacadeService {
 		Bean bean = beanFactory.create(reqDto);
 		int affectedRows = beanCommandService.insert(bean);
 		if (affectedRows == 0) {
-			throw new BeanException(ErrorCode.BEAN_SAVE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 
 		if (!CollectionUtils.isEmpty(reqDto.flavorIds())) {
@@ -77,7 +77,7 @@ public class BeanFacadeService {
 		Bean updatedBean = beanFactory.createForUpdate(existingBean, reqDto);
 		int affectedRows = beanCommandService.update(updatedBean);
 		if (affectedRows == 0) {
-			throw new BeanException(ErrorCode.BEAN_UPDATE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 
 		// Flavor 매핑 업데이트
@@ -98,7 +98,7 @@ public class BeanFacadeService {
 
 		int affectedRows = beanCommandService.softDelete(beanId);
 		if (affectedRows == 0) {
-			throw new BeanException(ErrorCode.BEAN_DELETE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 	}
 

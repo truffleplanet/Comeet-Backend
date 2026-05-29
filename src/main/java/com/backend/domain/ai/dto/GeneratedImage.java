@@ -1,7 +1,7 @@
 package com.backend.domain.ai.dto;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.AiException;
+import com.backend.common.error.exception.BusinessException;
 
 import lombok.Builder;
 
@@ -13,10 +13,10 @@ public record GeneratedImage(
 ) {
 	public GeneratedImage {
 		if (data == null || data.length == 0) {
-			throw new AiException(ErrorCode.AI_IMAGE_DATA_EMPTY);
+			throw new BusinessException(ErrorCode.AI_IMAGE_DATA_EMPTY);
 		}
 		if (mimeType == null || mimeType.isBlank()) {
-			throw new AiException(ErrorCode.AI_MIME_TYPE_EMPTY);
+			throw new BusinessException(ErrorCode.AI_MIME_TYPE_EMPTY);
 		}
 	}
 

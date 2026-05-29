@@ -3,7 +3,7 @@ package com.backend.common.auth.dto;
 import java.util.Map;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.UserException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.user.entity.User;
 
 import lombok.Builder;
@@ -22,7 +22,7 @@ public class OAuth2Attribute {
 	public static OAuth2Attribute of(final String registrationId, final Map<String, Object> attributes) {
 		return switch (registrationId) {
 			case NAVER -> ofNaver(attributes);
-			default -> throw new UserException(ErrorCode.INVALID_INPUT);
+			default -> throw new BusinessException(ErrorCode.INVALID_INPUT);
 		};
 	}
 
