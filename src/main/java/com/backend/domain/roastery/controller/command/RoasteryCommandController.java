@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.common.auth.constants.RoleAuthority;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.roastery.dto.request.RoasteryCreateReqDto;
@@ -32,9 +33,9 @@ public class RoasteryCommandController {
 
 	@Operation(
 		summary = "로스터리 생성",
-		description = "새로운 로스터리를 등록합니다. MANAGER 권한이 필요합니다."
+		description = "새로운 로스터리를 등록합니다. OWNER 권한이 필요합니다."
 	)
-	@PreAuthorize("hasRole('ROLE_MANAGER')")
+	@PreAuthorize(RoleAuthority.OWNER)
 	@PostMapping
 	public ResponseEntity<BaseResponse<RoasteryResDto>> createRoastery(
 		@RequestBody @Valid RoasteryCreateReqDto reqDto
@@ -45,9 +46,9 @@ public class RoasteryCommandController {
 	@Deprecated(forRemoval = true)
 	@Operation(
 		summary = "로스터리 수정",
-		description = "로스터리 정보를 수정합니다. MANAGER 권한이 필요합니다."
+		description = "로스터리 정보를 수정합니다. OWNER 권한이 필요합니다."
 	)
-	@PreAuthorize("hasRole('ROLE_MANAGER')")
+	@PreAuthorize(RoleAuthority.OWNER)
 	@PatchMapping("/{roasteryId}")
 	public ResponseEntity<BaseResponse<RoasteryResDto>> updateRoastery(
 		@PathVariable Long roasteryId,

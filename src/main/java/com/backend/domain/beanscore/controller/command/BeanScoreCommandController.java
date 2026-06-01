@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.common.auth.constants.RoleAuthority;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.beanscore.dto.request.BeanScoreUpdateReqDto;
@@ -28,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "BeanScore", description = "원두 점수 관련 API")
 @RestController
 @RequestMapping("/bean-scores")
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+@PreAuthorize(RoleAuthority.ADMIN)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class BeanScoreCommandController {
 

@@ -149,3 +149,8 @@ SET s.review_count = COALESCE(stats.review_count, 0),
     s.rating_count = COALESCE(stats.rating_count, 0),
     s.rating_sum = COALESCE(stats.rating_sum, 0),
     s.average_rating = COALESCE(stats.average_rating, 0);
+
+-- 2026-06-02: 가맹점주 역할명을 MANAGER에서 OWNER로 정리
+UPDATE users
+SET role = 'OWNER'
+WHERE role = 'MANAGER';

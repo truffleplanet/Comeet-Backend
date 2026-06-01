@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.common.annotation.CurrentUser;
+import com.backend.common.auth.constants.RoleAuthority;
 import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
@@ -29,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Menu", description = "메뉴 관리 API")
 @RestController
 @RequestMapping("/menus")
-@PreAuthorize("hasRole('ROLE_MANAGER')")
+@PreAuthorize(RoleAuthority.OWNER)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class MenuCommandController {
 

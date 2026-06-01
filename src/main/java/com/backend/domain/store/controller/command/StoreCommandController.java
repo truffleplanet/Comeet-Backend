@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.common.annotation.CurrentUser;
+import com.backend.common.auth.constants.RoleAuthority;
 import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
@@ -30,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Store", description = "가맹점 관리 API")
 @RestController
 @RequestMapping("/stores")
-@PreAuthorize("hasRole('ROLE_MANAGER')")
+@PreAuthorize(RoleAuthority.OWNER)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 class StoreCommandController {
 
@@ -51,7 +52,7 @@ class StoreCommandController {
 
 	@Operation(
 		summary = "가맹점 등록",
-		description = "새로운 가맹점을 등록합니다. (OWNER 권한 필요)"
+		description = "새로운 가맹점을 등록합니다. OWNER(가맹점주) 권한이 필요합니다."
 	)
 	@PostMapping
 	public ResponseEntity<BaseResponse<StoreDetailResDto>> createStore(
