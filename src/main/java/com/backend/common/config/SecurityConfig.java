@@ -10,11 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.backend.common.auth.handler.OAuth2LoginSuccessHandler;
-import com.backend.common.auth.service.CustomOAuth2UserService;
 import com.backend.common.filter.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -26,9 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final CorsConfig corsConfig;
-	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
-	private final CustomOAuth2UserService customOAuth2UserService;
 
 	private static final String[] WHITELIST = {
 		// Web
@@ -45,12 +43,13 @@ public class SecurityConfig {
 		"/actuator",
 		"/actuator/**",
 
-		// OAuth2
-		"/oauth2/**",
-		"/login/**",
-
 		// Auth
+		"/auth/signup",
+		"/auth/login",
 		"/auth/reissue",
+
+		// Local development
+		"/dev/**",
 	};
 
 	@Bean
@@ -81,9 +80,7 @@ public class SecurityConfig {
 				.requestMatchers(HttpMethod.GET, "/beans/{id:\\d+}").permitAll()
 
 				.anyRequest().authenticated()
-			).oauth2Login(oauth2 -> oauth2
-				.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-				.successHandler(oAuth2LoginSuccessHandler));
+			);
 
 		http
 			.addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -93,5 +90,12 @@ public class SecurityConfig {
 
 	private static void createSessionPolicy(SessionManagementConfigurer<HttpSecurity> session) {
 		session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+	}
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return username -> {
+			throw new UsernameNotFoundException(username);
+		};
 	}
 }

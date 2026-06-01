@@ -48,12 +48,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		"/actuator",
 		"/actuator/**",
 
-		// OAuth2
-		"/oauth2/**",
-		"/login/**",
-
 		// Auth
-		"/auth/reissue"
+		"/auth/signup",
+		"/auth/login",
+		"/auth/reissue",
+
+		// Local development
+		"/dev/**"
 	};
 
 	// GET 요청에서만 JWT 검증 스킵하는 경로 (목록 조회)
