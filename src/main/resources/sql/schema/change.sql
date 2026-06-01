@@ -49,3 +49,55 @@ ALTER TABLE stores
 -- 2025-12-23 #50
 ALTER TABLE menu_bean_mappings
     DROP is_blended;
+
+-- 2026-06-01: 위치 기반 매장/추천 조회 BoundingBox 조건 최적화
+DROP PROCEDURE IF EXISTS add_idx_stores_location_deleted;
+DELIMITER //
+CREATE PROCEDURE add_idx_stores_location_deleted()
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'stores'
+          AND index_name = 'idx_stores_location_deleted'
+    ) THEN
+        CREATE INDEX idx_stores_location_deleted
+            ON stores (latitude, longitude, deleted_at);
+    END IF;
+END //
+DELIMITER ;
+
+CALL add_idx_stores_location_deleted();
+DROP PROCEDURE IF EXISTS add_idx_stores_location_deleted;
+
+-- 2026-06-02: 사용자별 방문 이력 최신순 조회 정렬 최적화
+DROP PROCEDURE IF EXISTS add_idx_visits_user_created;
+DELIMITER //
+CREATE PROCEDURE add_idx_visits_user_created()
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'visits'
+          AND index_name = 'idx_visits_user_created'
+    ) THEN
+        CREATE INDEX idx_visits_user_created
+            ON visits (user_id, created_at DESC);
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'visits'
+          AND index_name = 'user_id'
+    ) THEN
+        DROP INDEX user_id ON visits;
+    END IF;
+END //
+DELIMITER ;
+
+CALL add_idx_visits_user_created();
+DROP PROCEDURE IF EXISTS add_idx_visits_user_created;
