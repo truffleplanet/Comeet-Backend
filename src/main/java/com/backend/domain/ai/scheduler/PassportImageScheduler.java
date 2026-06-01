@@ -22,7 +22,7 @@ public class PassportImageScheduler {
 	private final BatchImageGenerationFacadeService batchImageGenerationFacadeService;
 	private final PassportFacadeService passportFacadeService;
 
-	@Scheduled(cron = "0 0 2 1 * *", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 0 2 1 * *", zone = "UTC")
 	public void generateMonthlyPassportImages() {
 		LocalDateTime now = LocalDateTime.now();
 		YearMonth lastMonth = YearMonth.from(now.minusMonths(1));
@@ -44,7 +44,7 @@ public class PassportImageScheduler {
 			log.info("[Scheduler] 월별 Passport 이미지 자동 생성 완료 - batchId: {}, 사용자 수: {}, year: {}, month: {}",
 				batchId, userIds.size(), year, month);
 
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[Scheduler] 월별 Passport 이미지 자동 생성 실패 - year: {}, month: {}", year, month, e);
 		}
 	}

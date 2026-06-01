@@ -1,6 +1,6 @@
 package com.backend.common.response;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
@@ -17,8 +17,8 @@ public record BaseResponse<T>(
 	boolean success,
 	@Nullable T data,
 	@Nullable ErrorResponse error,
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-	LocalDateTime timestamp
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
+	OffsetDateTime timestamp
 ) {
 
 	/**
@@ -30,7 +30,7 @@ public record BaseResponse<T>(
 			.success(true)
 			.data(data)
 			.error(null)
-			.timestamp(LocalDateTime.now())
+			.timestamp(OffsetDateTime.now())
 			.build();
 	}
 
@@ -43,7 +43,7 @@ public record BaseResponse<T>(
 			.success(true)
 			.data(data)
 			.error(null)
-			.timestamp(LocalDateTime.now())
+			.timestamp(OffsetDateTime.now())
 			.build();
 	}
 
@@ -56,7 +56,7 @@ public record BaseResponse<T>(
 			.success(true)
 			.data(null)
 			.error(null)
-			.timestamp(LocalDateTime.now())
+			.timestamp(OffsetDateTime.now())
 			.build();
 	}
 
@@ -69,7 +69,7 @@ public record BaseResponse<T>(
 			.success(false)
 			.data(null)
 			.error(error)
-			.timestamp(LocalDateTime.now())
+			.timestamp(OffsetDateTime.now())
 			.build();
 	}
 }
