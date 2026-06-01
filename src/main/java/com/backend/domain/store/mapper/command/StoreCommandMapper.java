@@ -16,10 +16,11 @@ public interface StoreCommandMapper {
 
 	int softDelete(@Param("storeId") Long storeId);
 
-	int updateRatingStats(
+	int applyReviewStatsDelta(
 		@Param("storeId") Long storeId,
-		@Param("averageRating") BigDecimal averageRating,
-		@Param("reviewCount") Integer reviewCount
+		@Param("reviewCountDelta") int reviewCountDelta,
+		@Param("ratingCountDelta") int ratingCountDelta,
+		@Param("ratingSumDelta") BigDecimal ratingSumDelta
 	);
 
 	int incrementVisitCount(@Param("storeId") Long storeId);

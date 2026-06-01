@@ -49,3 +49,103 @@ ALTER TABLE stores
 -- 2025-12-23 #50
 ALTER TABLE menu_bean_mappings
     DROP is_blended;
+
+-- 2026-06-01: 위치 기반 매장/추천 조회 BoundingBox 조건 최적화
+DROP PROCEDURE IF EXISTS add_idx_stores_location_deleted;
+DELIMITER //
+CREATE PROCEDURE add_idx_stores_location_deleted()
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'stores'
+          AND index_name = 'idx_stores_location_deleted'
+    ) THEN
+        CREATE INDEX idx_stores_location_deleted
+            ON stores (latitude, longitude, deleted_at);
+    END IF;
+END //
+DELIMITER ;
+
+CALL add_idx_stores_location_deleted();
+DROP PROCEDURE IF EXISTS add_idx_stores_location_deleted;
+
+-- 2026-06-02: 사용자별 방문 이력 최신순 조회 정렬 최적화
+DROP PROCEDURE IF EXISTS add_idx_visits_user_created;
+DELIMITER //
+CREATE PROCEDURE add_idx_visits_user_created()
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'visits'
+          AND index_name = 'idx_visits_user_created'
+    ) THEN
+        CREATE INDEX idx_visits_user_created
+            ON visits (user_id, created_at DESC);
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'visits'
+          AND index_name = 'user_id'
+    ) THEN
+        DROP INDEX user_id ON visits;
+    END IF;
+END //
+DELIMITER ;
+
+CALL add_idx_visits_user_created();
+DROP PROCEDURE IF EXISTS add_idx_visits_user_created;
+
+-- 2026-06-02: 리뷰 수와 평점 통계 증분 갱신을 위한 누적 컬럼 추가
+DROP PROCEDURE IF EXISTS add_store_review_stat_columns;
+DELIMITER //
+CREATE PROCEDURE add_store_review_stat_columns()
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+          AND table_name = 'stores'
+          AND column_name = 'rating_count'
+    ) THEN
+        ALTER TABLE stores
+            ADD COLUMN rating_count INT NOT NULL DEFAULT 0 AFTER review_count;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+          AND table_name = 'stores'
+          AND column_name = 'rating_sum'
+    ) THEN
+        ALTER TABLE stores
+            ADD COLUMN rating_sum DECIMAL(10, 2) NOT NULL DEFAULT 0 AFTER rating_count;
+    END IF;
+END //
+DELIMITER ;
+
+CALL add_store_review_stat_columns();
+DROP PROCEDURE IF EXISTS add_store_review_stat_columns;
+
+UPDATE stores s
+    LEFT JOIN (
+        SELECT store_id,
+               COUNT(*)                           AS review_count,
+               COUNT(rating)                      AS rating_count,
+               COALESCE(SUM(rating), 0)           AS rating_sum,
+               COALESCE(ROUND(AVG(rating), 2), 0) AS average_rating
+        FROM reviews
+        WHERE deleted_at IS NULL
+        GROUP BY store_id
+    ) stats ON stats.store_id = s.id
+SET s.review_count = COALESCE(stats.review_count, 0),
+    s.rating_count = COALESCE(stats.rating_count, 0),
+    s.rating_sum = COALESCE(stats.rating_sum, 0),
+    s.average_rating = COALESCE(stats.average_rating, 0);

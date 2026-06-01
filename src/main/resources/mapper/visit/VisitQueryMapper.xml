@@ -27,7 +27,7 @@
                 </foreach>
             </when>
             <otherwise>
-                ORDER BY id DESC
+                ORDER BY created_at DESC
             </otherwise>
         </choose>
         LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}

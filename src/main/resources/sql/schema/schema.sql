@@ -40,6 +40,8 @@ CREATE TABLE IF NOT EXISTS stores
     close_time     TIME,
     average_rating DECIMAL(3, 2)  NOT NULL DEFAULT 0,
     review_count   INT            NOT NULL DEFAULT 0,
+    rating_count   INT            NOT NULL DEFAULT 0,
+    rating_sum     DECIMAL(10, 2) NOT NULL DEFAULT 0,
     visit_count    INT            NOT NULL DEFAULT 0,
     is_closed      BOOLEAN        NOT NULL DEFAULT FALSE,
     deleted_at     TIMESTAMP,
@@ -47,7 +49,8 @@ CREATE TABLE IF NOT EXISTS stores
     updated_at     TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT chk_average_rating CHECK (average_rating >= 0 AND average_rating <= 5.0),
     FOREIGN KEY (roastery_id) REFERENCES roasteries (id),
-    FOREIGN KEY (owner_id) REFERENCES users (id)
+    FOREIGN KEY (owner_id) REFERENCES users (id),
+    INDEX idx_stores_location_deleted (latitude, longitude, deleted_at)
 );
 
 CREATE TABLE IF NOT EXISTS owner_applications
@@ -107,6 +110,7 @@ CREATE TABLE IF NOT EXISTS visits
     longitude   DECIMAL(11, 8) NOT NULL,
     is_verified BOOLEAN        NOT NULL DEFAULT FALSE,
     created_at  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_visits_user_created (user_id, created_at DESC),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 

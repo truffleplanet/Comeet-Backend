@@ -40,6 +40,8 @@ public class StoreFactory {
 			.closeTime(TimeUtils.getCloseTime(times))
 			.averageRating(INITIAL_AVERAGE_RATING)
 			.reviewCount(INITIAL_COUNT)
+			.ratingCount(INITIAL_COUNT)
+			.ratingSum(BigDecimal.ZERO)
 			.visitCount(INITIAL_COUNT)
 			.isClosed(false)
 			.build();

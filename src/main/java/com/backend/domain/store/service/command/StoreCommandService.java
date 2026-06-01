@@ -12,7 +12,7 @@ public interface StoreCommandService {
 
 	void deleteStore(Long storeId);
 
-	void updateRatingStats(Long storeId, BigDecimal averageRating, Integer reviewCount);
+	void applyReviewStatsDelta(Long storeId, int reviewCountDelta, int ratingCountDelta, BigDecimal ratingSumDelta);
 
 	void incrementVisitCount(Long storeId);
 }

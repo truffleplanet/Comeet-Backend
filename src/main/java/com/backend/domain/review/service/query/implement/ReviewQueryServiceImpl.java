@@ -1,7 +1,6 @@
 package com.backend.domain.review.service.query.implement;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -9,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.BusinessException;
-import com.backend.domain.review.dto.common.StoreRatingStatsDto;
 import com.backend.domain.review.entity.Review;
 import com.backend.domain.review.mapper.query.ReviewQueryMapper;
 import com.backend.domain.review.service.query.ReviewQueryService;
@@ -58,10 +56,5 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
 	@Override
 	public boolean existsByVisitId(final Long visitId) {
 		return queryMapper.existsByVisitId(visitId);
-	}
-
-	@Override
-	public Optional<StoreRatingStatsDto> findRatingStatsByStoreId(final Long storeId) {
-		return queryMapper.findRatingStatsByStoreId(storeId);
 	}
 }

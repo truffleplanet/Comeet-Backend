@@ -19,6 +19,8 @@
                             close_time,
                             average_rating,
                             review_count,
+                            rating_count,
+                            rating_sum,
                             visit_count,
                             is_closed,
                             created_at,
@@ -37,6 +39,8 @@
                 #{store.closeTime},
                 #{store.averageRating},
                 #{store.reviewCount},
+                #{store.ratingCount},
+                #{store.ratingSum},
                 #{store.visitCount},
                 #{store.isClosed},
                 NOW(),
@@ -70,10 +74,20 @@
         <include refid="common.CommonSql.notDeleted"/>
     </update>
 
-    <update id="updateRatingStats">
+    <update id="applyReviewStatsDelta">
         UPDATE stores
-        SET average_rating = #{averageRating},
-            review_count   = #{reviewCount},
+        SET average_rating = CASE
+                WHEN GREATEST(rating_count + #{ratingCountDelta}, 0) > 0
+                    THEN ROUND(
+                        GREATEST(rating_sum + #{ratingSumDelta}, 0)
+                            / GREATEST(rating_count + #{ratingCountDelta}, 0),
+                        2
+                    )
+                ELSE 0
+            END,
+            review_count   = GREATEST(review_count + #{reviewCountDelta}, 0),
+            rating_count   = GREATEST(rating_count + #{ratingCountDelta}, 0),
+            rating_sum     = GREATEST(rating_sum + #{ratingSumDelta}, 0),
             updated_at     = NOW()
         WHERE id = #{storeId}
         <include refid="common.CommonSql.notDeleted"/>

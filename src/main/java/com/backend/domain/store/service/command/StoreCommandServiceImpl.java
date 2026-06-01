@@ -55,16 +55,26 @@ public class StoreCommandServiceImpl implements StoreCommandService {
 	}
 
 	@Override
-	public void updateRatingStats(final Long storeId, final BigDecimal averageRating, final Integer reviewCount) {
-		int affectedRows = storeCommandMapper.updateRatingStats(storeId, averageRating, reviewCount);
+	public void applyReviewStatsDelta(
+		final Long storeId,
+		final int reviewCountDelta,
+		final int ratingCountDelta,
+		final BigDecimal ratingSumDelta
+	) {
+		int affectedRows = storeCommandMapper.applyReviewStatsDelta(
+			storeId,
+			reviewCountDelta,
+			ratingCountDelta,
+			ratingSumDelta
+		);
 
 		if (affectedRows == 0) {
-			log.warn("[Store] 평점 업데이트 실패 - storeId: {}", storeId);
+			log.warn("[Store] 리뷰 통계 증분 업데이트 실패 - storeId: {}", storeId);
 			throw new BusinessException(ErrorCode.STORE_NOT_FOUND);
 		}
 
-		log.info("[Store] 평점 업데이트 완료 - storeId: {}, averageRating: {}, reviewCount: {}",
-			storeId, averageRating, reviewCount);
+		log.info("[Store] 리뷰 통계 증분 업데이트 완료 - storeId: {}, reviewDelta: {}, ratingCountDelta: {}",
+			storeId, reviewCountDelta, ratingCountDelta);
 	}
 
 	@Override

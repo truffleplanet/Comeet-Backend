@@ -22,7 +22,6 @@ import com.backend.domain.review.converter.CuppingNoteConverter;
 import com.backend.domain.review.converter.ReviewConverter;
 import com.backend.domain.review.dto.common.ReviewFlavorDto;
 import com.backend.domain.review.dto.common.ReviewPageDto;
-import com.backend.domain.review.dto.common.StoreRatingStatsDto;
 import com.backend.domain.review.dto.request.CuppingNoteReqDto;
 import com.backend.domain.review.dto.request.ReviewReqDto;
 import com.backend.domain.review.dto.response.CuppingResDto;
@@ -73,7 +72,7 @@ public class ReviewFacadeService {
 		try {
 			Review review = processCreateReview(userId, reqDto);
 			tastingNoteCommandService.appendTastingNotes(review.getId(), reqDto.flavorIdList());
-			updateStoreRatingStats(review.getStoreId());
+			applyCreatedReviewStats(review);
 			return createReviewedResDto(review, reqDto.flavorIdList());
 		} catch (DuplicateKeyException e) {
 			log.warn("[Review] 중복 리뷰 생성 감지 - visitId: {}", reqDto.visitId(), e);
@@ -92,7 +91,7 @@ public class ReviewFacadeService {
 		Review existingReview = getValidatedReview(reviewId, userId);
 		Review updatedReview = processUpdateReview(existingReview, reqDto);
 		tastingNoteCommandService.overwriteTastingNotes(reviewId, reqDto.flavorIdList());
-		updateStoreRatingStats(updatedReview.getStoreId());
+		applyUpdatedReviewStats(existingReview, updatedReview);
 		return createReviewedResDto(updatedReview, reqDto.flavorIdList());
 	}
 
@@ -104,7 +103,7 @@ public class ReviewFacadeService {
 		if (affectedRows == 0) {
 			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
-		updateStoreRatingStats(storeId);
+		applyDeletedReviewStats(storeId, review.getRating());
 	}
 
 	public ReportResDto reportReview(final Long reviewId, final User user) {
@@ -275,11 +274,46 @@ public class ReviewFacadeService {
 		return CuppingNoteConverter.toCuppingResDto(cuppingNote);
 	}
 
-	private void updateStoreRatingStats(final Long storeId) {
-		StoreRatingStatsDto stats = reviewQueryService.findRatingStatsByStoreId(storeId)
-			.orElse(new StoreRatingStatsDto(BigDecimal.ZERO, 0));
-		storeCommandService.updateRatingStats(storeId, stats.averageRating(), stats.reviewCount());
-		log.debug("[Review] 가맹점 평점 업데이트 - storeId: {}, avgRating: {}, count: {}",
-			storeId, stats.averageRating(), stats.reviewCount());
+	private void applyCreatedReviewStats(final Review review) {
+		storeCommandService.applyReviewStatsDelta(
+			review.getStoreId(),
+			1,
+			ratingCountDelta(null, review.getRating()),
+			ratingSumDelta(null, review.getRating())
+		);
+	}
+
+	private void applyUpdatedReviewStats(final Review existingReview, final Review updatedReview) {
+		storeCommandService.applyReviewStatsDelta(
+			updatedReview.getStoreId(),
+			0,
+			ratingCountDelta(existingReview.getRating(), updatedReview.getRating()),
+			ratingSumDelta(existingReview.getRating(), updatedReview.getRating())
+		);
+	}
+
+	private void applyDeletedReviewStats(final Long storeId, final BigDecimal rating) {
+		storeCommandService.applyReviewStatsDelta(
+			storeId,
+			-1,
+			ratingCountDelta(rating, null),
+			ratingSumDelta(rating, null)
+		);
+	}
+
+	private int ratingCountDelta(final BigDecimal oldRating, final BigDecimal newRating) {
+		if (oldRating == null && newRating != null) {
+			return 1;
+		}
+		if (oldRating != null && newRating == null) {
+			return -1;
+		}
+		return 0;
+	}
+
+	private BigDecimal ratingSumDelta(final BigDecimal oldRating, final BigDecimal newRating) {
+		BigDecimal oldValue = oldRating == null ? BigDecimal.ZERO : oldRating;
+		BigDecimal newValue = newRating == null ? BigDecimal.ZERO : newRating;
+		return newValue.subtract(oldValue);
 	}
 }
