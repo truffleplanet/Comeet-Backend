@@ -11,8 +11,6 @@ import java.util.concurrent.Semaphore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.Resource;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import com.backend.common.error.ErrorCode;
@@ -23,7 +21,6 @@ import com.backend.domain.ai.dto.response.BatchProgressResDto;
 import com.backend.domain.ai.entity.BatchProgress;
 import com.backend.domain.ai.event.PassportImageGeneratedEvent;
 import com.backend.domain.ai.repository.BatchProgressRepository;
-import com.backend.domain.ai.service.ImageGenerationService;
 import com.backend.domain.passport.entity.Passport;
 import com.backend.domain.passport.service.query.PassportQueryService;
 
@@ -38,7 +35,7 @@ public class BatchImageGenerationFacadeService {
 
 	private static final int PERMITS = 50;
 
-	private final ImageGenerationService imageGenerationService;
+	private final BatchImageService batchImageService;
 	private final PassportQueryService passportQueryService;
 	private final BatchProgressRepository progressRepository;
 	private final ApplicationEventPublisher eventPublisher;
@@ -107,16 +104,12 @@ public class BatchImageGenerationFacadeService {
 		}, virtualThreadExecutor);
 	}
 
-	@Retryable(
-		retryFor = {BusinessException.class},
-		backoff = @Backoff(delay = 5000)
-	)
 	private void processUserImage(final String batchId, final Long userId) {
 		try {
 			Passport passport = passportQueryService.findLatestByUserId(userId);
 			String prompt = buildPromptFromPassport(passport);
 			log.debug("[Batch Image] 이미지 생성 시작 - userId: {}, passportId: {}", userId, passport.getId());
-			String imageUrl = imageGenerationService.generate(prompt);
+			String imageUrl = batchImageService.generateImageWithRetry(prompt);
 
 			eventPublisher.publishEvent(
 				new PassportImageGeneratedEvent(this, batchId, userId, passport.getId(), imageUrl));

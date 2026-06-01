@@ -32,6 +32,7 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation("org.springframework.retry:spring-retry:2.0.12")
+    implementation 'org.springframework:spring-aspects'
 
     // MySQL Database Driver
     runtimeOnly 'com.mysql:mysql-connector-j:8.2.0'
