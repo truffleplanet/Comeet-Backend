@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ public class FlavorQueryServiceImpl implements FlavorQueryService {
 	private final FlavorQueryMapper queryMapper;
 
 	@Override
+	@Cacheable(cacheNames = "flavorsByIds", key = "#flavorIdList")
 	public List<Flavor> findAllByIds(final List<Long> flavorIdList) {
 		if (CollectionUtils.isEmpty(flavorIdList)) {
 			return List.of();
@@ -47,6 +49,7 @@ public class FlavorQueryServiceImpl implements FlavorQueryService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "allFlavors")
 	public List<Flavor> findAll() {
 		List<Flavor> flavors = queryMapper.findAll();
 		log.info("[Review] 모든 Flavor 조회 완료 - 조회성공: {}건", flavors.size());
@@ -54,6 +57,7 @@ public class FlavorQueryServiceImpl implements FlavorQueryService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "flavorsByCodes", key = "#codes")
 	public List<Flavor> findByCodes(List<String> codes) {
 		if (CollectionUtils.isEmpty(codes)) {
 			return List.of();
