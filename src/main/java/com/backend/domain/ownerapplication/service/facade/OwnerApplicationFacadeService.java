@@ -2,14 +2,17 @@ package com.backend.domain.ownerapplication.service.facade;
 
 import java.util.List;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.BusinessException;
+import com.backend.domain.ownerapplication.dto.request.OwnerApplicationApproveReqDto;
 import com.backend.domain.ownerapplication.dto.request.OwnerApplicationCreateReqDto;
 import com.backend.domain.ownerapplication.dto.request.OwnerApplicationRejectReqDto;
 import com.backend.domain.ownerapplication.dto.response.OwnerApplicationResDto;
+import com.backend.domain.ownerapplication.dto.response.OwnerApplicationReviewHistoryResDto;
 import com.backend.domain.ownerapplication.entity.OwnerApplication;
 import com.backend.domain.ownerapplication.entity.OwnerApplicationStatus;
 import com.backend.domain.ownerapplication.service.command.OwnerApplicationCommandService;
@@ -41,15 +44,29 @@ public class OwnerApplicationFacadeService {
 			throw new BusinessException(ErrorCode.OWNER_APPLICATION_ALREADY_PENDING);
 		}
 
-		OwnerApplication application = OwnerApplication.create(userId, reqDto);
-		return OwnerApplicationResDto.from(commandService.save(application));
+		try {
+			OwnerApplication application = OwnerApplication.create(userId, reqDto);
+			return OwnerApplicationResDto.from(commandService.save(application));
+		} catch (DuplicateKeyException e) {
+			throw new BusinessException(ErrorCode.OWNER_APPLICATION_ALREADY_PENDING);
+		}
 	}
 
-	public OwnerApplicationResDto approve(final Long applicationId, final Long adminId) {
+	public OwnerApplicationResDto approve(
+		final Long applicationId,
+		final Long adminId,
+		final OwnerApplicationApproveReqDto reqDto
+	) {
 		OwnerApplication application = queryService.findById(applicationId);
 		validatePending(application);
 
 		commandService.approve(applicationId, adminId);
+		commandService.saveReviewHistory(
+			applicationId,
+			adminId,
+			OwnerApplicationStatus.APPROVED,
+			reqDto == null ? null : reqDto.reviewComment()
+		);
 		storeFacadeService.createStore(application.toStoreCreateReqDto(), application.getUserId());
 		userCommandService.updateRole(application.getUserId(), Role.OWNER);
 
@@ -65,6 +82,12 @@ public class OwnerApplicationFacadeService {
 		validatePending(application);
 
 		commandService.reject(applicationId, adminId, reqDto.rejectReason());
+		commandService.saveReviewHistory(
+			applicationId,
+			adminId,
+			OwnerApplicationStatus.REJECTED,
+			reqDto.rejectReason()
+		);
 		return OwnerApplicationResDto.from(queryService.findById(applicationId));
 	}
 
@@ -83,6 +106,15 @@ public class OwnerApplicationFacadeService {
 		return queryService.findAllByStatus(status)
 			.stream()
 			.map(OwnerApplicationResDto::from)
+			.toList();
+	}
+
+	@Transactional(readOnly = true)
+	public List<OwnerApplicationReviewHistoryResDto> findReviewHistories(final Long applicationId) {
+		queryService.findById(applicationId);
+		return queryService.findReviewHistoriesByApplicationId(applicationId)
+			.stream()
+			.map(OwnerApplicationReviewHistoryResDto::from)
 			.toList();
 	}
 

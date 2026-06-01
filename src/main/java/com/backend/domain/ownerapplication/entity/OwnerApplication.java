@@ -25,6 +25,9 @@ public class OwnerApplication {
 	private String storeAddress;
 	private BigDecimal latitude;
 	private BigDecimal longitude;
+	private String businessRegistrationNumber;
+	private String representativeName;
+	private String businessLicenseUrl;
 	private String openingHours;
 	private String category;
 	private String phoneNumber;
@@ -45,6 +48,9 @@ public class OwnerApplication {
 			.storeAddress(reqDto.address())
 			.latitude(reqDto.latitude())
 			.longitude(reqDto.longitude())
+			.businessRegistrationNumber(reqDto.businessRegistrationNumber())
+			.representativeName(reqDto.representativeName())
+			.businessLicenseUrl(reqDto.businessLicenseUrl())
 			.openingHours(reqDto.openingHours())
 			.category(reqDto.category())
 			.phoneNumber(reqDto.phoneNumber())

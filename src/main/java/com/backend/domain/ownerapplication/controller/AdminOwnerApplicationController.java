@@ -17,8 +17,10 @@ import com.backend.common.auth.constants.RoleAuthority;
 import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
+import com.backend.domain.ownerapplication.dto.request.OwnerApplicationApproveReqDto;
 import com.backend.domain.ownerapplication.dto.request.OwnerApplicationRejectReqDto;
 import com.backend.domain.ownerapplication.dto.response.OwnerApplicationResDto;
+import com.backend.domain.ownerapplication.dto.response.OwnerApplicationReviewHistoryResDto;
 import com.backend.domain.ownerapplication.entity.OwnerApplicationStatus;
 import com.backend.domain.ownerapplication.service.facade.OwnerApplicationFacadeService;
 
@@ -60,17 +62,30 @@ class AdminOwnerApplicationController {
 	}
 
 	@Operation(
+		summary = "가맹점주 신청 검토 이력 조회",
+		description = "관리자가 특정 가맹점주 신청의 승인/거절 검토 이력을 조회합니다."
+	)
+	@GetMapping("/{applicationId}/histories")
+	public ResponseEntity<BaseResponse<List<OwnerApplicationReviewHistoryResDto>>> findReviewHistories(
+		@PathVariable Long applicationId
+	) {
+		return ResponseUtils.ok(ownerApplicationFacadeService.findReviewHistories(applicationId));
+	}
+
+	@Operation(
 		summary = "가맹점주 신청 승인",
 		description = "관리자가 신청을 승인합니다. 승인 시 가맹점이 생성되고 신청자는 OWNER로 승격됩니다."
 	)
 	@PostMapping("/{applicationId}/approve")
 	public ResponseEntity<BaseResponse<OwnerApplicationResDto>> approve(
 		@PathVariable Long applicationId,
-		@CurrentUser AuthenticatedUser user
+		@CurrentUser AuthenticatedUser user,
+		@RequestBody(required = false) @Valid OwnerApplicationApproveReqDto reqDto
 	) {
 		OwnerApplicationResDto response = ownerApplicationFacadeService.approve(
 			applicationId,
-			user.getUser().getId()
+			user.getUser().getId(),
+			reqDto
 		);
 		return ResponseUtils.ok(response);
 	}

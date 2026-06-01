@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.BusinessException;
+import com.backend.domain.ownerapplication.dto.request.OwnerApplicationApproveReqDto;
 import com.backend.domain.ownerapplication.dto.request.OwnerApplicationCreateReqDto;
 import com.backend.domain.ownerapplication.dto.request.OwnerApplicationRejectReqDto;
 import com.backend.domain.ownerapplication.dto.response.OwnerApplicationResDto;
@@ -155,13 +156,17 @@ class OwnerApplicationFacadeServiceTest {
 		when(queryService.findById(applicationId)).thenReturn(pending, approved);
 		when(userCommandService.updateRole(userId, Role.OWNER)).thenReturn(1);
 
+		OwnerApplicationApproveReqDto reqDto = new OwnerApplicationApproveReqDto("확인 완료");
+
 		// when
-		OwnerApplicationResDto result = ownerApplicationFacadeService.approve(applicationId, adminId);
+		OwnerApplicationResDto result = ownerApplicationFacadeService.approve(applicationId, adminId, reqDto);
 
 		// then
 		assertThat(result.status()).isEqualTo(OwnerApplicationStatus.APPROVED);
 		var ordered = inOrder(commandService, storeFacadeService, userCommandService);
 		ordered.verify(commandService, times(1)).approve(applicationId, adminId);
+		ordered.verify(commandService, times(1))
+			.saveReviewHistory(applicationId, adminId, OwnerApplicationStatus.APPROVED, "확인 완료");
 		ordered.verify(storeFacadeService, times(1)).createStore(any(StoreCreateReqDto.class), eq(userId));
 		ordered.verify(userCommandService, times(1)).updateRole(userId, Role.OWNER);
 	}
@@ -198,6 +203,9 @@ class OwnerApplicationFacadeServiceTest {
 			"Seoul",
 			new BigDecimal("37.5012"),
 			new BigDecimal("127.0396"),
+			"123-45-67890",
+			"김코밋",
+			"https://example.com/business-license.pdf",
 			"09:00-22:00",
 			"SPECIALTY_COFFEE",
 			"02-1234-5678",

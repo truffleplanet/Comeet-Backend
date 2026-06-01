@@ -154,3 +154,83 @@ SET s.review_count = COALESCE(stats.review_count, 0),
 UPDATE users
 SET role = 'OWNER'
 WHERE role = 'MANAGER';
+
+-- 2026-06-02: 사업자 승인 정보와 관리자 검토 이력 추가
+DROP PROCEDURE IF EXISTS add_owner_application_business_columns;
+DELIMITER //
+CREATE PROCEDURE add_owner_application_business_columns()
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+          AND table_name = 'owner_applications'
+          AND column_name = 'business_registration_number'
+    ) THEN
+        ALTER TABLE owner_applications
+            ADD COLUMN business_registration_number VARCHAR(20) NOT NULL DEFAULT '' AFTER longitude;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+          AND table_name = 'owner_applications'
+          AND column_name = 'representative_name'
+    ) THEN
+        ALTER TABLE owner_applications
+            ADD COLUMN representative_name VARCHAR(100) NOT NULL DEFAULT '' AFTER business_registration_number;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+          AND table_name = 'owner_applications'
+          AND column_name = 'business_license_url'
+    ) THEN
+        ALTER TABLE owner_applications
+            ADD COLUMN business_license_url VARCHAR(500) NOT NULL DEFAULT '' AFTER representative_name;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+          AND table_name = 'owner_applications'
+          AND column_name = 'pending_user_id'
+    ) THEN
+        ALTER TABLE owner_applications
+            ADD COLUMN pending_user_id BIGINT GENERATED ALWAYS AS (
+                CASE WHEN status = 'PENDING' THEN user_id ELSE NULL END
+            ) STORED AFTER reviewed_at;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'owner_applications'
+          AND index_name = 'uk_owner_applications_pending_user'
+    ) THEN
+        CREATE UNIQUE INDEX uk_owner_applications_pending_user
+            ON owner_applications (pending_user_id);
+    END IF;
+END //
+DELIMITER ;
+
+CALL add_owner_application_business_columns();
+DROP PROCEDURE IF EXISTS add_owner_application_business_columns;
+
+CREATE TABLE IF NOT EXISTS owner_application_review_histories
+(
+    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    application_id BIGINT       NOT NULL,
+    reviewer_id    BIGINT       NOT NULL,
+    status         VARCHAR(20)  NOT NULL,
+    comment        VARCHAR(500),
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_owner_application_histories_application (application_id, created_at),
+    FOREIGN KEY (application_id) REFERENCES owner_applications (id),
+    FOREIGN KEY (reviewer_id) REFERENCES users (id)
+);

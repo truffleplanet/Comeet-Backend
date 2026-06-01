@@ -3,6 +3,7 @@ package com.backend.domain.ownerapplication.service.query;
 import java.util.List;
 
 import com.backend.domain.ownerapplication.entity.OwnerApplication;
+import com.backend.domain.ownerapplication.entity.OwnerApplicationReviewHistory;
 import com.backend.domain.ownerapplication.entity.OwnerApplicationStatus;
 
 public interface OwnerApplicationQueryService {
@@ -13,4 +14,6 @@ public interface OwnerApplicationQueryService {
 	boolean existsPendingByUserId(Long userId);
 
 	List<OwnerApplication> findAllByStatus(OwnerApplicationStatus status);
+
+	List<OwnerApplicationReviewHistory> findReviewHistoriesByApplicationId(Long applicationId);
 }

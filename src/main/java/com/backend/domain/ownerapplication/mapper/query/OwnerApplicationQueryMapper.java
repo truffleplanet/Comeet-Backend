@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.backend.domain.ownerapplication.entity.OwnerApplication;
+import com.backend.domain.ownerapplication.entity.OwnerApplicationReviewHistory;
 import com.backend.domain.ownerapplication.entity.OwnerApplicationStatus;
 
 @Mapper
@@ -18,4 +19,6 @@ public interface OwnerApplicationQueryMapper {
 	int countPendingByUserId(@Param("userId") Long userId);
 
 	List<OwnerApplication> findAllByStatus(@Param("status") OwnerApplicationStatus status);
+
+	List<OwnerApplicationReviewHistory> findReviewHistoriesByApplicationId(@Param("applicationId") Long applicationId);
 }

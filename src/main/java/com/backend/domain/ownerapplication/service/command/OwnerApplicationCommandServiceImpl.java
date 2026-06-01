@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.ownerapplication.entity.OwnerApplication;
+import com.backend.domain.ownerapplication.entity.OwnerApplicationStatus;
 import com.backend.domain.ownerapplication.mapper.command.OwnerApplicationCommandMapper;
 
 import lombok.AccessLevel;
@@ -43,5 +44,21 @@ public class OwnerApplicationCommandServiceImpl implements OwnerApplicationComma
 			throw new BusinessException(ErrorCode.OWNER_APPLICATION_NOT_PENDING);
 		}
 		log.info("[OwnerApplication] 신청 거절 완료 - id: {}, adminId: {}", applicationId, adminId);
+	}
+
+	@Override
+	public void saveReviewHistory(
+		final Long applicationId,
+		final Long reviewerId,
+		final OwnerApplicationStatus status,
+		final String comment
+	) {
+		commandMapper.saveReviewHistory(applicationId, reviewerId, status, comment);
+		log.info(
+			"[OwnerApplication] 검토 이력 저장 완료 - applicationId: {}, reviewerId: {}, status: {}",
+			applicationId,
+			reviewerId,
+			status
+		);
 	}
 }

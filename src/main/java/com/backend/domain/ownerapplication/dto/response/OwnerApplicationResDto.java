@@ -20,6 +20,9 @@ public record OwnerApplicationResDto(
 	String address,
 	BigDecimal latitude,
 	BigDecimal longitude,
+	String businessRegistrationNumber,
+	String representativeName,
+	String businessLicenseUrl,
 	String openingHours,
 	String category,
 	String phoneNumber,
@@ -41,6 +44,9 @@ public record OwnerApplicationResDto(
 			.address(application.getStoreAddress())
 			.latitude(application.getLatitude())
 			.longitude(application.getLongitude())
+			.businessRegistrationNumber(application.getBusinessRegistrationNumber())
+			.representativeName(application.getRepresentativeName())
+			.businessLicenseUrl(application.getBusinessLicenseUrl())
 			.openingHours(application.getOpeningHours())
 			.category(application.getCategory())
 			.phoneNumber(application.getPhoneNumber())
