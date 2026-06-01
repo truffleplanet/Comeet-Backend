@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.RoasteryException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.roastery.entity.Roastery;
 import com.backend.domain.roastery.mapper.query.RoasteryQueryMapper;
 import com.backend.domain.roastery.service.query.RoasteryQueryService;
@@ -26,7 +26,7 @@ public class RoasteryQueryServiceImpl implements RoasteryQueryService {
 	@Override
 	public Roastery findById(final Long roasteryId) {
 		Roastery roastery = queryMapper.findById(roasteryId)
-			.orElseThrow(() -> new RoasteryException(ErrorCode.ROASTERY_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.ROASTERY_NOT_FOUND));
 		log.info("[Roastery] 로스터리 조회 - ID: {}", roastery.getId());
 		return roastery;
 	}

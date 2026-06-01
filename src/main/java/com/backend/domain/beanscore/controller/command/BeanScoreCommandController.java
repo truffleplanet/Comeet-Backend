@@ -1,6 +1,7 @@
 package com.backend.domain.beanscore.controller.command;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "BeanScore", description = "원두 점수 관련 API")
 @RestController
 @RequestMapping("/bean-scores")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class BeanScoreCommandController {
 

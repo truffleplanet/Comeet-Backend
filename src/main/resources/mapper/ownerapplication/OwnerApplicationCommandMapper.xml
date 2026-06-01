@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.ownerapplication.mapper.command.OwnerApplicationCommandMapper">
+
+    <insert id="save" parameterType="OwnerApplication" useGeneratedKeys="true" keyProperty="application.id">
+        INSERT INTO owner_applications (user_id,
+                                        roastery_id,
+                                        store_name,
+                                        store_description,
+                                        store_address,
+                                        latitude,
+                                        longitude,
+                                        opening_hours,
+                                        category,
+                                        phone_number,
+                                        thumbnail_url,
+                                        status,
+                                        created_at,
+                                        updated_at)
+        VALUES (#{application.userId},
+                #{application.roasteryId},
+                #{application.storeName},
+                #{application.storeDescription},
+                #{application.storeAddress},
+                #{application.latitude},
+                #{application.longitude},
+                #{application.openingHours},
+                #{application.category},
+                #{application.phoneNumber},
+                #{application.thumbnailUrl},
+                #{application.status},
+                NOW(),
+                NOW())
+    </insert>
+
+    <update id="approve">
+        UPDATE owner_applications
+        SET status = 'APPROVED',
+            reviewed_by = #{adminId},
+            reviewed_at = NOW(),
+            updated_at = NOW()
+        WHERE id = #{applicationId}
+          AND status = 'PENDING'
+    </update>
+
+    <update id="reject">
+        UPDATE owner_applications
+        SET status = 'REJECTED',
+            reject_reason = #{rejectReason},
+            reviewed_by = #{adminId},
+            reviewed_at = NOW(),
+            updated_at = NOW()
+        WHERE id = #{applicationId}
+          AND status = 'PENDING'
+    </update>
+
+</mapper>

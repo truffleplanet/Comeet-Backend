@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.ReviewException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.util.PageUtils;
 import com.backend.domain.flavor.converter.FlavorConverter;
 import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
@@ -74,7 +74,7 @@ public class ReviewFacadeService {
 
 	private void validateVisitIdNotDuplicate(final Long visitId) {
 		if (reviewQueryService.existsByVisitId(visitId)) {
-			throw new ReviewException(ErrorCode.REVIEW_ALREADY_EXISTS_FOR_VISIT);
+			throw new BusinessException(ErrorCode.REVIEW_ALREADY_EXISTS_FOR_VISIT);
 		}
 	}
 
@@ -91,7 +91,7 @@ public class ReviewFacadeService {
 		Long storeId = review.getStoreId();
 		int affectedRows = reviewCommandService.softDelete(review.getId());
 		if (affectedRows == 0) {
-			throw new ReviewException(ErrorCode.REVIEW_SOFT_DELETE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 		updateStoreRatingStats(storeId);
 	}
@@ -164,7 +164,7 @@ public class ReviewFacadeService {
 
 		int affectedRows = reviewCommandService.update(updatedReview);
 		if (affectedRows == 0) {
-			throw new ReviewException(ErrorCode.REVIEW_UPDATE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 		return updatedReview;
 	}
@@ -234,7 +234,7 @@ public class ReviewFacadeService {
 
 	private void validateCuppingNoteNotDuplicate(final Long reviewId) {
 		if (cuppingNoteQueryService.existsByReviewId(reviewId)) {
-			throw new ReviewException(ErrorCode.CUPPING_NOTE_ALREADY_EXISTS);
+			throw new BusinessException(ErrorCode.CUPPING_NOTE_ALREADY_EXISTS);
 		}
 	}
 
@@ -242,7 +242,7 @@ public class ReviewFacadeService {
 		CuppingNote cuppingNote = cuppingNoteFactory.create(reviewId, reqDto);
 		int affectedRows = cuppingNoteCommandService.insert(cuppingNote);
 		if (affectedRows == 0) {
-			throw new ReviewException(ErrorCode.CUPPING_NOTE_SAVE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 		return cuppingNote;
 	}
@@ -253,7 +253,7 @@ public class ReviewFacadeService {
 
 		int affectedRows = cuppingNoteCommandService.update(updatedNote);
 		if (affectedRows == 0) {
-			throw new ReviewException(ErrorCode.CUPPING_NOTE_UPDATE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 		return updatedNote;
 	}

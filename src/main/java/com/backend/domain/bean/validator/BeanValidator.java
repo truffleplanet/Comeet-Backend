@@ -3,7 +3,7 @@ package com.backend.domain.bean.validator;
 import org.springframework.stereotype.Component;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.BeanException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.validator.Validator;
 import com.backend.domain.bean.entity.Bean;
 
@@ -17,19 +17,19 @@ public class BeanValidator implements Validator<Bean> {
 
 	private void validateNotNull(final Bean bean) {
 		if (bean == null) {
-			throw new BeanException(ErrorCode.INVALID_BEAN_REQUEST);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
 	private void validateCountry(final String country) {
 		if (country == null || country.isBlank()) {
-			throw new BeanException(ErrorCode.BEAN_COUNTRY_REQUIRED);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
 	public void validateBelongsToRoastery(final Bean bean, final Long roasteryId) {
 		if (!bean.getRoasteryId().equals(roasteryId)) {
-			throw new BeanException(ErrorCode.BEAN_ACCESS_DENIED);
+			throw new BusinessException(ErrorCode.BEAN_ACCESS_DENIED);
 		}
 	}
 }

@@ -1,11 +1,9 @@
 package com.backend.domain.visit.validator;
 
-import static com.backend.common.error.ErrorCode.*;
-
 import org.springframework.stereotype.Component;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.VisitException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.validator.Validator;
 import com.backend.domain.visit.entity.Visit;
 
@@ -25,7 +23,7 @@ public class VisitValidator implements Validator<Visit> {
 
 	private void validateNotNull(final Visit visit) {
 		if (visit == null) {
-			throw new VisitException(INVALID_VISIT_REQUEST);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
@@ -34,11 +32,11 @@ public class VisitValidator implements Validator<Visit> {
 		Double longitude = visit.getLongitude();
 
 		if (latitude == null || longitude == null) {
-			throw new VisitException(INVALID_VISIT_REQUEST);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 
 		if (isOutOfKorea(latitude, longitude)) {
-			throw new VisitException(LOCATION_OUT_OF_KOREA);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
@@ -49,7 +47,7 @@ public class VisitValidator implements Validator<Visit> {
 
 	public void validateVisitBelongsToUser(final Long visitUserId, final Long userId) {
 		if (!visitUserId.equals(userId)) {
-			throw new VisitException(ErrorCode.VISIT_NOT_BELONG_TO_USER);
+			throw new BusinessException(ErrorCode.VISIT_NOT_BELONG_TO_USER);
 		}
 	}
 }

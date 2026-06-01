@@ -1,10 +1,12 @@
 package com.backend.common.util;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import com.backend.common.error.exception.BusinessException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.experimental.UtilityClass;
@@ -14,38 +16,63 @@ import lombok.extern.slf4j.Slf4j;
 @UtilityClass
 public class LoggingUtil {
 
-	/**
-	 * 일반 예외를 로깅합니다. 스택트레이스 중 첫 번째 요소만 출력합니다.
-	 *
-	 * @param prefix  로그 메시지 앞에 붙일 식별자
-	 * @param e       발생한 예외
-	 * @param request 요청 정보
-	 */
-	public void logException(String prefix, Exception e, HttpServletRequest request) {
-		String firstStack = Arrays.stream(e.getStackTrace())
-			.findFirst()
-			.map(StackTraceElement::toString)
-			.orElse("스택 없음");
+	public void logBusinessException(BusinessException ex, HttpServletRequest request) {
+		HttpStatus status = ex.getErrorCode().getHttpStatus();
 
-		log.error("{}: {}", prefix, e.getMessage());
-		log.error("예외 발생 지점 [{} {}]", request.getMethod(), request.getRequestURI());
-		log.error("StackTrace: {}", firstStack);
+		if (status.is5xxServerError()) {
+			log.error(
+				"BusinessException - code: {}, status: {}, request: [{} {}], message: {}",
+				ex.getErrorCode().getCode(),
+				status.value(),
+				request.getMethod(),
+				request.getRequestURI(),
+				ex.getMessage(),
+				ex
+			);
+			return;
+		}
+
+		log.warn(
+			"BusinessException - code: {}, status: {}, request: [{} {}], message: {}",
+			ex.getErrorCode().getCode(),
+			status.value(),
+			request.getMethod(),
+			request.getRequestURI(),
+			ex.getMessage()
+		);
 	}
 
-	/**
-	 * 유효성 검사 예외를 로깅합니다. 실패한 필드와 메시지를 모두 출력합니다.
-	 *
-	 * @param ex      MethodArgumentNotValidException
-	 * @param request 요청 정보
-	 */
+	public void logSystemException(String prefix, Exception ex, HttpServletRequest request) {
+		log.error(
+			"{} - request: [{} {}], message: {}",
+			prefix,
+			request.getMethod(),
+			request.getRequestURI(),
+			ex.getMessage(),
+			ex
+		);
+	}
+
 	public void logValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
 		String errorFields = ex.getBindingResult().getFieldErrors().stream()
 			.map(LoggingUtil::formatFieldError)
 			.collect(Collectors.joining(" "));
 
-		log.error("MethodArgumentNotValidException 발생 : 유효성 검사 실패");
-		log.error("예외 발생 지점 [{} {}]", request.getMethod(), request.getRequestURI());
-		log.error("StackTrace: {}", errorFields);
+		log.warn(
+			"Validation failed - request: [{} {}], errors: {}",
+			request.getMethod(),
+			request.getRequestURI(),
+			errorFields
+		);
+	}
+
+	public void logNotFoundException(Exception ex, HttpServletRequest request) {
+		log.warn(
+			"Endpoint not found - request: [{} {}], message: {}",
+			request.getMethod(),
+			request.getRequestURI(),
+			ex.getMessage()
+		);
 	}
 
 	private String formatFieldError(FieldError error) {

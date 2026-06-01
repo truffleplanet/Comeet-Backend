@@ -1,6 +1,7 @@
 package com.backend.domain.ai.controller.command;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name = "Batch AI", description = "배치 AI 이미지 생성 API")
 @RestController
 @RequestMapping("/batch/images")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class BatchImageCommandController {
 

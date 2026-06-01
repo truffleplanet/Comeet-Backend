@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.AiException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.ai.constants.ImageGenerationConstants;
 import com.backend.domain.ai.dto.GeneratedImage;
 import com.google.genai.ResponseStream;
@@ -31,7 +31,7 @@ public class GeminiResponseParser {
 		}
 
 		log.error("[AI] 이미지 생성 실패 - 응답이 비어있음");
-		throw new AiException(ErrorCode.AI_IMAGE_EMPTY_RESPONSE);
+		throw new BusinessException(ErrorCode.AI_IMAGE_EMPTY_RESPONSE);
 	}
 
 	private Optional<GeneratedImage> extractImageFromResponse(final GenerateContentResponse response) {

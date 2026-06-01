@@ -6,7 +6,7 @@ import java.time.Year;
 import org.springframework.stereotype.Component;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.PassportException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.passport.entity.Passport;
 
 import lombok.AccessLevel;
@@ -24,14 +24,14 @@ public class PassportValidator {
 		int currentYear = Year.now().getValue();
 		if (year < MIN_YEAR || year > currentYear) {
 			log.warn("[Passport] 잘못된 연도: {}", year);
-			throw new PassportException(ErrorCode.INVALID_YEAR);
+			throw new BusinessException(ErrorCode.INVALID_YEAR);
 		}
 	}
 
 	public void validateAvailability(final Passport passport) {
 		if (!isAvailable(passport.getYear(), passport.getMonth())) {
 			log.warn("[Passport] 아직 여권을 열람할 수 없습니다: {}-{}", passport.getYear(), passport.getMonth());
-			throw new PassportException(ErrorCode.PASSPORT_NOT_AVAILABLE_YET);
+			throw new BusinessException(ErrorCode.PASSPORT_NOT_AVAILABLE_YET);
 		}
 	}
 
@@ -39,7 +39,7 @@ public class PassportValidator {
 		if (!passport.getUserId().equals(userId)) {
 			log.warn("[Passport] 액세스 거부됨: 사용자 {}가 {} 사용자 소유의 여권에 액세스하려고 했습니다.",
 				userId, passport.getUserId());
-			throw new PassportException(ErrorCode.PASSPORT_ACCESS_DENIED);
+			throw new BusinessException(ErrorCode.PASSPORT_ACCESS_DENIED);
 		}
 	}
 

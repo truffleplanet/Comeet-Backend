@@ -3,7 +3,7 @@ package com.backend.domain.roastery.validator;
 import org.springframework.stereotype.Component;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.RoasteryException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.validator.Validator;
 import com.backend.domain.roastery.entity.Roastery;
 
@@ -17,13 +17,13 @@ public class RoasteryValidator implements Validator<Roastery> {
 
 	private void validateNotNull(final Roastery roastery) {
 		if (roastery == null) {
-			throw new RoasteryException(ErrorCode.INVALID_ROASTERY_REQUEST);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
 	private void validateName(final String name) {
 		if (name == null || name.isBlank()) {
-			throw new RoasteryException(ErrorCode.ROASTERY_NAME_REQUIRED);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 }

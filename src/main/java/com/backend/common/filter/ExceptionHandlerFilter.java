@@ -1,5 +1,6 @@
 package com.backend.common.filter;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -21,11 +22,11 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) {
 		try {
 			filterChain.doFilter(request, response);
 		} catch (Exception e) {
-			log.error("[ExceptionHandlerFilter] Filter 단계에서 예외 발생");
+			log.debug("[ExceptionHandlerFilter] Filter 단계에서 예외를 공통 핸들러로 전달합니다.");
 			exceptionResolver.resolveException(request, response, null, e);
 		}
 	}

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.MenuException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.menu.entity.Menu;
 import com.backend.domain.menu.mapper.query.MenuQueryMapper;
 
@@ -27,7 +27,7 @@ public class MenuQueryServiceImpl implements MenuQueryService {
 	public Menu findById(Long menuId) {
 		log.debug("[Menu] 메뉴 조회 - id: {}", menuId);
 		return menuQueryMapper.findById(menuId)
-			.orElseThrow(() -> new MenuException(ErrorCode.MENU_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.MENU_NOT_FOUND));
 	}
 
 	@Override

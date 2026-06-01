@@ -3,7 +3,7 @@ package com.backend.domain.user.validator;
 import org.springframework.stereotype.Component;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.UserException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.validator.Validator;
 import com.backend.domain.user.dto.request.UserRegisterReqDto;
 import com.backend.domain.user.entity.Role;
@@ -26,26 +26,33 @@ public class UserValidator implements Validator<User> {
 
 	public void validate(final UserRegisterReqDto reqDto) {
 		validateNickname(reqDto.nickname());
+		validateRegisterRole(reqDto.role());
 	}
 
 	public void validateNickname(final String nickname) {
 		if (nickname == null || nickname.isBlank()) {
-			throw new UserException(ErrorCode.NICKNAME_NOT_BLANK);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 		if (!nickname.matches(NICKNAME_REGEX)) {
-			throw new UserException(ErrorCode.NICKNAME_INVALID_FORMAT);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
 	private void validateUserId(final Long userId) {
 		if (userId == null) {
-			throw new UserException(ErrorCode.INVALID_USER);
+			throw new BusinessException(ErrorCode.INVALID_USER);
 		}
 	}
 
 	private void validateUserRole(final Role role) {
 		if (role == null || Role.isNotActiveUser(role)) {
-			throw new UserException(ErrorCode.ACCESS_DENIED);
+			throw new BusinessException(ErrorCode.ACCESS_DENIED);
+		}
+	}
+
+	private void validateRegisterRole(final Role role) {
+		if (role != Role.USER) {
+			throw new BusinessException(ErrorCode.INVALID_ROLE);
 		}
 	}
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.MenuException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.util.PageUtils;
 import com.backend.domain.bean.entity.Bean;
 import com.backend.domain.bean.service.query.BeanQueryService;
@@ -93,7 +93,7 @@ public class MenuFacadeService {
 
 		int existingMappingCount = menuQueryService.countMenuBeanMapping(menuId, reqDto.beanId());
 		if (existingMappingCount > 0) {
-			throw new MenuException(ErrorCode.MENU_BEAN_ALREADY_MAPPED);
+			throw new BusinessException(ErrorCode.MENU_BEAN_ALREADY_MAPPED);
 		}
 
 		menuCommandService.insertMenuBeanMapping(menuId, reqDto.beanId(), reqDto.isBlended());

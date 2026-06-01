@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.StoreException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.store.entity.Store;
 import com.backend.domain.store.mapper.command.StoreCommandMapper;
 
@@ -35,7 +35,7 @@ public class StoreCommandServiceImpl implements StoreCommandService {
 
 		if (affectedRows == 0) {
 			log.error("[Store] 가맹점 수정 실패 - ID: {}", store.getId());
-			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
+			throw new BusinessException(ErrorCode.STORE_NOT_FOUND);
 		}
 
 		log.info("[Store] 가맹점 수정 완료 - ID: {}", store.getId());
@@ -48,7 +48,7 @@ public class StoreCommandServiceImpl implements StoreCommandService {
 
 		if (affectedRows == 0) {
 			log.error("[Store] 가맹점 삭제 실패 - ID: {}", storeId);
-			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
+			throw new BusinessException(ErrorCode.STORE_NOT_FOUND);
 		}
 
 		log.info("[Store] 가맹점 삭제 완료 - ID: {}", storeId);
@@ -60,7 +60,7 @@ public class StoreCommandServiceImpl implements StoreCommandService {
 
 		if (affectedRows == 0) {
 			log.warn("[Store] 평점 업데이트 실패 - storeId: {}", storeId);
-			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
+			throw new BusinessException(ErrorCode.STORE_NOT_FOUND);
 		}
 
 		log.info("[Store] 평점 업데이트 완료 - storeId: {}, averageRating: {}, reviewCount: {}",
@@ -73,7 +73,7 @@ public class StoreCommandServiceImpl implements StoreCommandService {
 
 		if (affectedRows == 0) {
 			log.warn("[Store] 방문 카운트 증가 실패 - storeId: {}", storeId);
-			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
+			throw new BusinessException(ErrorCode.STORE_NOT_FOUND);
 		}
 
 		log.info("[Store] 방문 카운트 증가 완료 - storeId: {}", storeId);

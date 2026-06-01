@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.BeanScoreException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.redis.service.RedisVectorService;
 import com.backend.domain.beanscore.batch.BeanEmbeddingBatchService;
 import com.backend.domain.beanscore.converter.BeanScoreConverter;
@@ -45,7 +45,7 @@ public class BeanScoreFacadeService {
 	@Transactional
 	public BeanScoreResDto createBeanScore(Long beanId, BeanScoreUpdateReqDto reqDto) {
 		if (beanScoreQueryService.existsByBeanId(beanId)) {
-			throw new BeanScoreException(ErrorCode.BEAN_SCORE_ALREADY_EXISTS);
+			throw new BusinessException(ErrorCode.BEAN_SCORE_ALREADY_EXISTS);
 		}
 
 		BeanScore beanScore = BeanScore.createDefault(beanId);
@@ -107,7 +107,7 @@ public class BeanScoreFacadeService {
 	@Transactional
 	public void deleteBeanScore(Long beanId) {
 		if (!beanScoreQueryService.existsByBeanId(beanId)) {
-			throw new BeanScoreException(ErrorCode.BEAN_SCORE_NOT_FOUND);
+			throw new BusinessException(ErrorCode.BEAN_SCORE_NOT_FOUND);
 		}
 		beanScoreCommandService.deleteByBeanId(beanId);
 		redisVectorService.deleteEmbedding(beanId);

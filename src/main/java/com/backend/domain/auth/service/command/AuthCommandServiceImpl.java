@@ -10,8 +10,7 @@ import com.backend.common.auth.redis.RefreshToken;
 import com.backend.common.auth.redis.repository.BlackListRepository;
 import com.backend.common.auth.redis.repository.RefreshTokenRepository;
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.AuthException;
-import com.backend.common.error.exception.UserException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.common.util.CookieUtil;
 import com.backend.domain.user.entity.User;
 
@@ -39,10 +38,10 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 		String refreshToken = CookieUtil.extractRefreshToken(request);
 
 		User user = jwtTokenProvider.getUser(refreshToken)
-			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
 		String accessToken = jwtTokenProvider.extractAccessToken(request)
-			.orElseThrow(() -> new AuthException(ErrorCode.TOKEN_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_NOT_FOUND));
 
 		jwtTokenProvider.setBlackList(refreshToken);
 		jwtTokenProvider.setBlackList(accessToken);
@@ -57,17 +56,17 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 		String refreshToken = CookieUtil.extractRefreshToken(request);
 
 		if (blackListRepository.existsById(refreshToken)) {
-			throw new AuthException(ErrorCode.TOKEN_BLACKLISTED_EXCEPTION);
+			throw new BusinessException(ErrorCode.TOKEN_BLACKLISTED_EXCEPTION);
 		}
 
 		User user = jwtTokenProvider.getUser(refreshToken)
-			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
 		RefreshToken savedRefreshToken = refreshTokenRepository.findById(user.getSocialId())
-			.orElseThrow(() -> new AuthException(ErrorCode.TOKEN_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_NOT_FOUND));
 
 		if (!refreshToken.equals(savedRefreshToken.getToken())) {
-			throw new AuthException(ErrorCode.REFRESH_TOKEN_NOT_MATCH);
+			throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_MATCH);
 		}
 
 		jwtTokenProvider.setBlackList(refreshToken);

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.ReviewException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.review.entity.CuppingNote;
 import com.backend.domain.review.mapper.command.CuppingNoteCommandMapper;
 import com.backend.domain.review.service.command.CuppingNoteCommandService;
@@ -26,7 +26,7 @@ public class CuppingNoteCommandServiceImpl implements CuppingNoteCommandService 
 
 		if (result != 1) {
 			log.error("[CuppingNote] 커핑 노트 저장 실패 - reviewId: {}, result: {}", cuppingNote.getReviewId(), result);
-			throw new ReviewException(ErrorCode.CUPPING_NOTE_SAVE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 
 		log.debug("[CuppingNote] 커핑 노트 저장 완료 - id: {}, reviewId: {}", cuppingNote.getId(),
@@ -41,7 +41,7 @@ public class CuppingNoteCommandServiceImpl implements CuppingNoteCommandService 
 		if (result != 1) {
 			log.error("[CuppingNote] 커핑 노트 업데이트 실패 - id: {}, reviewId: {}, result: {}",
 				cuppingNote.getId(), cuppingNote.getReviewId(), result);
-			throw new ReviewException(ErrorCode.CUPPING_NOTE_UPDATE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 
 		log.debug("[CuppingNote] 커핑 노트 업데이트 완료 - id: {}, reviewId: {}", cuppingNote.getId(),

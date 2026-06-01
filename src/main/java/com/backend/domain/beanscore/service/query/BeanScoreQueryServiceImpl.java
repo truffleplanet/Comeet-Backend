@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.BeanScoreException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.beanscore.dto.response.BeanScoreWithBeanDto;
 import com.backend.domain.beanscore.entity.BeanScore;
 import com.backend.domain.beanscore.mapper.query.BeanScoreQueryMapper;
@@ -32,7 +32,7 @@ public class BeanScoreQueryServiceImpl implements BeanScoreQueryService {
 	@Override
 	public BeanScore getByBeanId(Long beanId) {
 		return beanScoreQueryMapper.findByBeanId(beanId)
-			.orElseThrow(() -> new BeanScoreException(ErrorCode.BEAN_SCORE_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.BEAN_SCORE_NOT_FOUND));
 	}
 
 	@Override

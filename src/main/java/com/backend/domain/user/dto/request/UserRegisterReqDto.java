@@ -21,9 +21,9 @@ public record UserRegisterReqDto(
 	String nickname,
 
 	@Schema(
-		description = "사용자 역할 (USER: 일반 사용자, OWNER: 가맹점주)",
+		description = "사용자 역할 (USER만 허용, 가맹점주는 별도 신청 후 승인)",
 		example = "USER",
-		allowableValues = {"USER", "OWNER"}
+		allowableValues = {"USER"}
 	)
 	@NotNull(message = "역할은 필수 입력값입니다.")
 	Role role

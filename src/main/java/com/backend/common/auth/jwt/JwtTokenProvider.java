@@ -15,7 +15,7 @@ import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.auth.redis.BlackList;
 import com.backend.common.auth.redis.repository.BlackListRepository;
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.AuthException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.user.entity.User;
 import com.backend.domain.user.mapper.query.UserQueryMapper;
 
@@ -86,7 +86,7 @@ public class JwtTokenProvider {
 		validateTokenType(claims, ACCESS_TOKEN);
 
 		if (blackListRepository.existsById(accessToken)) {
-			throw new AuthException(ErrorCode.TOKEN_BLACKLISTED_EXCEPTION);
+			throw new BusinessException(ErrorCode.TOKEN_BLACKLISTED_EXCEPTION);
 		}
 	}
 
@@ -108,15 +108,15 @@ public class JwtTokenProvider {
 				.parseSignedClaims(token)
 				.getPayload();
 		} catch (ExpiredJwtException e) {
-			throw new AuthException(ErrorCode.TOKEN_EXPIRED_EXCEPTION);
+			throw new BusinessException(ErrorCode.TOKEN_EXPIRED_EXCEPTION);
 		} catch (MalformedJwtException | IllegalArgumentException e) {
-			throw new AuthException(ErrorCode.INVALID_TOKEN);
+			throw new BusinessException(ErrorCode.INVALID_TOKEN);
 		} catch (SignatureException e) {
-			throw new AuthException(ErrorCode.INVALID_TOKEN_SIGNATURE);
+			throw new BusinessException(ErrorCode.INVALID_TOKEN_SIGNATURE);
 		} catch (UnsupportedJwtException e) {
-			throw new AuthException(ErrorCode.INVALID_TOKEN_TYPE);
+			throw new BusinessException(ErrorCode.INVALID_TOKEN_TYPE);
 		} catch (Exception e) {
-			throw new AuthException(ErrorCode.TOKEN_PROCESSING_ERROR);
+			throw new BusinessException(ErrorCode.TOKEN_PROCESSING_ERROR);
 		}
 	}
 
@@ -139,18 +139,18 @@ public class JwtTokenProvider {
 
 		return queryMapper.findBySocialId(claims.getSubject())
 			.map(CustomOAuth2User::new)
-			.orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 	}
 
 	private void validateTokenType(Claims claims, String tokenType) {
 		getType(claims)
 			.filter(type -> type.equals(tokenType))
-			.orElseThrow(() -> new AuthException(ErrorCode.INVALID_TOKEN_TYPE));
+			.orElseThrow(() -> new BusinessException(ErrorCode.INVALID_TOKEN_TYPE));
 	}
 
 	private void validateUndeformedToken(String accessToken) {
 		if (accessToken == null || accessToken.isEmpty()) {
-			throw new AuthException(ErrorCode.MALFORMED_TOKEN_EXCEPTION);
+			throw new BusinessException(ErrorCode.MALFORMED_TOKEN_EXCEPTION);
 		}
 	}
 }

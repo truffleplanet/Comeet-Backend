@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.StoreException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.store.entity.Store;
 import com.backend.domain.store.mapper.query.StoreQueryMapper;
 import com.backend.domain.store.vo.StoreSearchBoundsVo;
@@ -27,7 +27,7 @@ public class StoreQueryServiceImpl implements StoreQueryService {
 	public Store findById(final Long storeId) {
 		log.debug("[Store] 가맹점 조회 - id: {}", storeId);
 		return queryMapper.findById(storeId)
-			.orElseThrow(() -> new StoreException(ErrorCode.STORE_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.STORE_NOT_FOUND));
 	}
 
 	@Override

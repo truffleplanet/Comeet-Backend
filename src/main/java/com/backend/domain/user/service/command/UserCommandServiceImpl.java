@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.UserException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.user.dto.request.UserRegisterReqDto;
 import com.backend.domain.user.dto.request.UserRoleUpdateReqDto;
 import com.backend.domain.user.dto.request.UserUpdateReqDto;
@@ -38,7 +38,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 	public int updateUserInfo(final Long userId, final UserRegisterReqDto reqDto) {
 		int updated = commandMapper.register(userId, reqDto);
 		if (updated == 0) {
-			throw new UserException(ErrorCode.USER_NOT_FOUND);
+			throw new BusinessException(ErrorCode.USER_NOT_FOUND);
 		}
 		log.info("[User] 유저 회원가입 완료 - userId : {}", userId);
 		return updated;
@@ -48,7 +48,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 	public int updateProfile(final Long userId, final UserUpdateReqDto reqDto) {
 		int updated = commandMapper.updateProfile(userId, reqDto);
 		if (updated == 0) {
-			throw new UserException(ErrorCode.USER_NOT_FOUND);
+			throw new BusinessException(ErrorCode.USER_NOT_FOUND);
 		}
 		log.info("[User] 프로필 수정 완료 - userId : {}", userId);
 		return updated;
@@ -58,7 +58,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 	public int updateRole(final Long userId, final UserRoleUpdateReqDto reqDto) {
 		int updated = commandMapper.updateRole(userId, reqDto);
 		if (updated == 0) {
-			throw new UserException(ErrorCode.USER_NOT_FOUND);
+			throw new BusinessException(ErrorCode.USER_NOT_FOUND);
 		}
 		log.info("[User] 역할 변경 완료 - userId : {}, role : {}", userId, reqDto.role());
 		return updated;

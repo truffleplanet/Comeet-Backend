@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.PassportException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.passport.service.facade.PassportFacadeService;
 
 import lombok.RequiredArgsConstructor;
@@ -52,7 +52,7 @@ public class PassportGenerateScheduler {
 
 		} catch (Exception e) {
 			log.error("[Passport] 월간 여권 생성 중 오류 발생", e);
-			throw new PassportException(ErrorCode.PASSPORT_GENERATION_FAILED);
+			throw new BusinessException(ErrorCode.PASSPORT_GENERATION_FAILED);
 		}
 	}
 }

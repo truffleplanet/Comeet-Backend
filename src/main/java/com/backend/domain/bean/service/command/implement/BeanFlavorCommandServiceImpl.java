@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.BeanException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.bean.dto.request.BeanFlavorCreateReqDto;
 import com.backend.domain.bean.dto.response.BeanFlavorResDto;
 import com.backend.domain.bean.entity.Bean;
@@ -50,7 +50,7 @@ public class BeanFlavorCommandServiceImpl implements BeanFlavorCommandService {
 
 		int affectedRows = insertBeanFlavors(bean.getId(), reqDto.flavorIds());
 		if (affectedRows == 0) {
-			throw new BeanException(ErrorCode.BEAN_FLAVOR_SAVE_FAILED);
+			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 
 		return buildBeanFlavorResDto(bean.getId());
@@ -65,7 +65,7 @@ public class BeanFlavorCommandServiceImpl implements BeanFlavorCommandService {
 		if (!CollectionUtils.isEmpty(reqDto.flavorIds())) {
 			int affectedRows = insertBeanFlavors(bean.getId(), reqDto.flavorIds());
 			if (affectedRows == 0) {
-				throw new BeanException(ErrorCode.BEAN_FLAVOR_SAVE_FAILED);
+				throw new BusinessException(ErrorCode.DATABASE_ERROR);
 			}
 		}
 

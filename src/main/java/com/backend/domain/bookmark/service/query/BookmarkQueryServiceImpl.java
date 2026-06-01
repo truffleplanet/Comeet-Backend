@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.BookmarkException;
+import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.bookmark.converter.BookmarkConverter;
 import com.backend.domain.bookmark.dto.response.BookmarkStatusResDto;
 import com.backend.domain.bookmark.dto.response.BookmarkedStoreResDto;
@@ -37,7 +37,7 @@ public class BookmarkQueryServiceImpl implements BookmarkQueryService {
 	public BookmarkFolder findFolderById(final Long folderId) {
 		log.debug("[Bookmark] 폴더 조회 - folderId: {}", folderId);
 		return queryMapper.findFolderById(folderId)
-			.orElseThrow(() -> new BookmarkException(ErrorCode.BOOKMARK_FOLDER_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(ErrorCode.BOOKMARK_FOLDER_NOT_FOUND));
 	}
 
 	@Override
