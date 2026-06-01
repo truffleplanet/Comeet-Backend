@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * OpenAI Embedding 서비스 (Spring AI + GMS 프록시)
+ * OpenAI Embedding 서비스 (Spring AI)
  */
 @Slf4j
 @Service

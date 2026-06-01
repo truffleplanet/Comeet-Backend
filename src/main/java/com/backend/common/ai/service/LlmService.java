@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * LLM 기반 리랭킹 서비스 (Spring AI + GMS 프록시)
+ * LLM 기반 리랭킹 서비스 (Spring AI + OpenAI)
  */
 @Slf4j
 @Service
