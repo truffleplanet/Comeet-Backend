@@ -65,7 +65,7 @@
 | Database | MySQL 8.0+ |
 | Cache & Vector | Redis Stack (캐싱, 세션, 벡터 검색) |
 | AI | Spring AI + OpenAI (임베딩, LLM 리랭킹), Gemini (여권 이미지 생성) |
-| Security | Spring Security + JWT + OAuth2 (Naver) |
+| Security | Spring Security + JWT |
 | API Docs | Swagger UI (SpringDoc) |
 
 ## Frontend (별도 레포지토리)
@@ -100,7 +100,8 @@ docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:lat
 git clone https://github.com/S14-Comeet/Comeet-Backend.git
 cd Comeet-Backend
 
-# 3. 환경 변수 설정 (application-local.yml 참고)
+# 3. MySQL에 comeet DB 생성
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS comeet CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
 # 4. 빌드 (테스트 제외)
 ./gradlew clean build -x test
@@ -111,7 +112,16 @@ cd Comeet-Backend
 
 ## 데이터베이스 초기화
 
-SQL 파일은 아래 순서대로 실행합니다:
+`local` 프로필은 실행 시 `schema/schema.sql`과 `local/seed.sql`을 자동 실행합니다.
+로컬 seed에는 API 실험용 계정이 포함되어 있으며 공통 비밀번호는 `password1234`입니다.
+
+| 역할 | 이메일 |
+|------|------|
+| USER | `user@example.com` |
+| MANAGER | `manager@example.com` |
+| ADMIN | `admin@example.com` |
+
+원격/운영 데이터 초기화가 필요한 경우 SQL 파일은 아래 순서대로 실행합니다:
 
 ```bash
 # 1. 스키마 생성
@@ -135,10 +145,11 @@ mysql -u [user] -p [database] < src/main/resources/sql/data/normalize_bean_count
 |------|------|------|
 | 1 | `schema/schema.sql` | 테이블 생성 |
 | 2 | `schema/change.sql` | 스키마 변경사항 |
-| 3 | `data/flavor_prod.sql` | 플레이버 휠 마스터 데이터 |
-| 4 | `data/country_coordinates.sql` | 국가별 좌표 데이터 |
-| 5 | `data/data_import.sql` | 카페, 메뉴, 원두 등 메인 데이터 |
-| 6 | `data/normalize_bean_country_and_processing.sql` | 원두 국가/가공방식 정규화 |
+| 3 | `local/seed.sql` | 로컬 개발용 최소 사용자/로스터리 데이터 |
+| 4 | `data/flavor_prod.sql` | 플레이버 휠 마스터 데이터 |
+| 5 | `data/country_coordinates.sql` | 국가별 좌표 데이터 |
+| 6 | `data/data_import.sql` | 카페, 메뉴, 원두 등 메인 데이터 |
+| 7 | `data/normalize_bean_country_and_processing.sql` | 원두 국가/가공방식 정규화 |
 
 ## API 문서
 서버 실행 후 Swagger UI에서 API 문서를 확인할 수 있습니다:

@@ -7,6 +7,9 @@ services:
       - .env
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_TIMEOUT=${REDIS_TIMEOUT:-60000}
     networks:
       - app-network
     depends_on:
@@ -17,7 +20,7 @@ services:
     image: redis/redis-stack-server:latest
     container_name: redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     networks:
