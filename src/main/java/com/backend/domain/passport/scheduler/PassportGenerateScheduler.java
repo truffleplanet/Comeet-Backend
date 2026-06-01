@@ -42,7 +42,7 @@ public class PassportGenerateScheduler {
 				try {
 					passportFacadeService.generatePassportForUser(userId, year, month);
 					successCount++;
-				} catch (Exception e) {
+				} catch (RuntimeException e) {
 					log.error("[Passport] 여권 생성 실패, userId={}", userId, e);
 					failCount++;
 				}
@@ -50,7 +50,7 @@ public class PassportGenerateScheduler {
 
 			log.info("[Passport] 월간 여권 생성 완료, success={}, failed={}", successCount, failCount);
 
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[Passport] 월간 여권 생성 중 오류 발생", e);
 			throw new BusinessException(ErrorCode.PASSPORT_GENERATION_FAILED);
 		}

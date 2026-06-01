@@ -6,6 +6,8 @@ import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.stereotype.Service;
 
+import com.backend.common.ai.exception.AiServiceException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,9 +39,9 @@ public class EmbeddingService {
 			}
 
 			return response.getResults().get(0).getOutput();
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[Embedding] 텍스트 임베딩 실패", e);
-			throw new RuntimeException("Embedding failed", e);
+			throw new AiServiceException("Embedding failed", e);
 		}
 	}
 
@@ -78,9 +80,9 @@ public class EmbeddingService {
 			return response.getResults().stream()
 				.map(result -> result.getOutput())
 				.toList();
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[Embedding] 배치 임베딩 실패", e);
-			throw new RuntimeException("Batch embedding failed", e);
+			throw new AiServiceException("Batch embedding failed", e);
 		}
 	}
 }

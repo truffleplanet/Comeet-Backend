@@ -1,6 +1,6 @@
 package com.backend.domain.visit.service.query;
 
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PROTECTED;
 
 import java.util.List;
 

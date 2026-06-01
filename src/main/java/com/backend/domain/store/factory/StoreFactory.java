@@ -1,11 +1,10 @@
 package com.backend.domain.store.factory;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
-
 import org.springframework.stereotype.Component;
 
 import com.backend.common.util.TimeUtils;
+import com.backend.common.util.TimeUtils.OpeningHours;
 import com.backend.domain.store.dto.request.StoreCreateReqDto;
 import com.backend.domain.store.dto.request.StoreUpdateReqDto;
 import com.backend.domain.store.entity.Store;
@@ -24,7 +23,7 @@ public class StoreFactory {
 	private final StoreValidator storeValidator;
 
 	public Store create(final StoreCreateReqDto reqDto, final Long ownerId) {
-		LocalTime[] times = TimeUtils.parseOpeningHours(reqDto.openingHours());
+		OpeningHours openingHours = TimeUtils.parseOpeningHours(reqDto.openingHours()).orElse(null);
 		Store store = Store.builder()
 			.ownerId(ownerId)
 			.roasteryId(reqDto.roasteryId())
@@ -36,8 +35,8 @@ public class StoreFactory {
 			.phoneNumber(reqDto.phoneNumber())
 			.category(reqDto.category())
 			.thumbnailUrl(reqDto.thumbnailUrl())
-			.openTime(TimeUtils.getOpenTime(times))
-			.closeTime(TimeUtils.getCloseTime(times))
+			.openTime(openingHours != null ? openingHours.openTime() : null)
+			.closeTime(openingHours != null ? openingHours.closeTime() : null)
 			.averageRating(INITIAL_AVERAGE_RATING)
 			.reviewCount(INITIAL_COUNT)
 			.ratingCount(INITIAL_COUNT)
@@ -96,10 +95,8 @@ public class StoreFactory {
 			return;
 		}
 
-		LocalTime[] times = TimeUtils.parseOpeningHours(openingHours);
-		if (times != null) {
-			builder.openTime(TimeUtils.getOpenTime(times))
-				.closeTime(TimeUtils.getCloseTime(times));
-		}
+		TimeUtils.parseOpeningHours(openingHours)
+			.ifPresent(times -> builder.openTime(times.openTime())
+				.closeTime(times.closeTime()));
 	}
 }

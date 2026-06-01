@@ -1,7 +1,6 @@
 package com.backend.common.util;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.util.Optional;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,9 +15,7 @@ public class CookieUtil {
 	public Cookie generateCookie(final String refreshToken, final Long refreshTokenExpiration) {
 		Cookie cookie = new Cookie(REFRESH_TOKEN_NAME, refreshToken);
 		cookie.setPath(PATH);
-		ZonedDateTime seoulTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-		ZonedDateTime expirationTime = seoulTime.plusSeconds(refreshTokenExpiration);
-		cookie.setMaxAge((int)(expirationTime.toEpochSecond() - seoulTime.toEpochSecond()));
+		cookie.setMaxAge((int)(refreshTokenExpiration / 1000));
 		cookie.setSecure(true);
 		cookie.setHttpOnly(true);
 		return cookie;
@@ -33,15 +30,15 @@ public class CookieUtil {
 		return cookie;
 	}
 
-	public String extractRefreshToken(final HttpServletRequest request) {
+	public Optional<String> extractRefreshToken(final HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				if (REFRESH_TOKEN_NAME.equals(cookie.getName())) {
-					return cookie.getValue();
+					return Optional.of(cookie.getValue());
 				}
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 }

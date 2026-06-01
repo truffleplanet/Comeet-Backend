@@ -11,14 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.backend.common.redis.config.RedisVectorConfig.RedisVectorProperties;
 import com.backend.common.redis.dto.VectorSearchResult;
-import com.google.gson.Gson;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.JedisPooled;
 import redis.clients.jedis.exceptions.JedisDataException;
-import redis.clients.jedis.json.Path;
+import redis.clients.jedis.json.Path2;
 import redis.clients.jedis.search.Document;
 import redis.clients.jedis.search.FTCreateParams;
 import redis.clients.jedis.search.IndexDataType;
@@ -38,7 +37,6 @@ public class RedisVectorService {
 
 	private final JedisPooled jedis;
 	private final RedisVectorProperties properties;
-	private final Gson gson = new Gson();
 
 	private static final String KEY_PREFIX = "bean:";
 
@@ -98,11 +96,9 @@ public class RedisVectorService {
 	public void saveEmbedding(Long beanId, float[] embedding) {
 		String key = KEY_PREFIX + beanId;
 
-		// JSON 문자열 직접 생성
 		BeanEmbeddingData data = new BeanEmbeddingData(beanId, embedding);
-		String jsonString = gson.toJson(data);
 
-		jedis.jsonSetWithPlainString(key, Path.ROOT_PATH, jsonString);
+		jedis.jsonSet(key, Path2.ROOT_PATH, data);
 		log.debug("Saved embedding for bean {}", beanId);
 	}
 

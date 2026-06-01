@@ -2,6 +2,7 @@ package com.backend.domain.recommendation.service.query;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,16 +63,16 @@ public class RecommendationQueryServiceImpl implements RecommendationQueryServic
 	}
 
 	@Override
-	public Double calculateDistance(MenuWithBeanScoreDto menu, BigDecimal latitude, BigDecimal longitude) {
+	public Optional<Double> calculateDistance(MenuWithBeanScoreDto menu, BigDecimal latitude, BigDecimal longitude) {
 		if (menu.storeLatitude() == null || menu.storeLongitude() == null
 			|| latitude == null || longitude == null) {
-			return null;
+			return Optional.empty();
 		}
 
-		return GeoUtils.calculateHaversineDistance(
+		return Optional.of(GeoUtils.calculateHaversineDistance(
 			latitude.doubleValue(),
 			longitude.doubleValue(),
 			menu.storeLatitude().doubleValue(),
-			menu.storeLongitude().doubleValue());
+			menu.storeLongitude().doubleValue()));
 	}
 }

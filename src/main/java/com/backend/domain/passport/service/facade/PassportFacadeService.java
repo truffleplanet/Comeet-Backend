@@ -124,7 +124,7 @@ public class PassportFacadeService {
 				try {
 					generatePassportForUser(targetUserId, year, month);
 					successCount++;
-				} catch (Exception e) {
+				} catch (RuntimeException e) {
 					log.error("[Passport] 여권 생성 실패 - userId={}", targetUserId, e);
 					failCount++;
 				}
