@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.BusinessException;
@@ -46,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewFacadeService {
 
@@ -64,6 +66,7 @@ public class ReviewFacadeService {
 	private final ReviewFactory reviewFactory;
 	private final CuppingNoteFactory cuppingNoteFactory;
 
+	@Transactional(rollbackFor = Exception.class)
 	public ReviewedResDto createReview(final Long userId, final ReviewReqDto reqDto) {
 		validateVisitIdNotDuplicate(reqDto.visitId());
 		Review review = processCreateReview(userId, reqDto);
@@ -78,6 +81,7 @@ public class ReviewFacadeService {
 		}
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	public ReviewedResDto updateReview(final Long reviewId, final Long userId, final ReviewReqDto reqDto) {
 		Review existingReview = getValidatedReview(reviewId, userId);
 		Review updatedReview = processUpdateReview(existingReview, reqDto);
@@ -86,6 +90,7 @@ public class ReviewFacadeService {
 		return createReviewedResDto(updatedReview, reqDto.flavorIdList());
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	public void deleteReview(final Long reviewId, final Long userId) {
 		Review review = getValidatedReview(reviewId, userId);
 		Long storeId = review.getStoreId();
@@ -206,6 +211,7 @@ public class ReviewFacadeService {
 			.toList();
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	public CuppingResDto createCuppingNote(
 		final Long userId,
 		final Long reviewId,
@@ -217,6 +223,7 @@ public class ReviewFacadeService {
 		return createCuppingResDto(cuppingNote);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	public CuppingResDto updateCuppingNote(
 		final Long userId,
 		final Long reviewId,
