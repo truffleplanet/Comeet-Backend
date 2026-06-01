@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,10 +70,15 @@ public class ReviewFacadeService {
 	@Transactional(rollbackFor = Exception.class)
 	public ReviewedResDto createReview(final Long userId, final ReviewReqDto reqDto) {
 		validateVisitIdNotDuplicate(reqDto.visitId());
-		Review review = processCreateReview(userId, reqDto);
-		tastingNoteCommandService.appendTastingNotes(review.getId(), reqDto.flavorIdList());
-		updateStoreRatingStats(review.getStoreId());
-		return createReviewedResDto(review, reqDto.flavorIdList());
+		try {
+			Review review = processCreateReview(userId, reqDto);
+			tastingNoteCommandService.appendTastingNotes(review.getId(), reqDto.flavorIdList());
+			updateStoreRatingStats(review.getStoreId());
+			return createReviewedResDto(review, reqDto.flavorIdList());
+		} catch (DuplicateKeyException e) {
+			log.warn("[Review] 중복 리뷰 생성 감지 - visitId: {}", reqDto.visitId(), e);
+			throw new BusinessException(ErrorCode.REVIEW_ALREADY_EXISTS_FOR_VISIT);
+		}
 	}
 
 	private void validateVisitIdNotDuplicate(final Long visitId) {
