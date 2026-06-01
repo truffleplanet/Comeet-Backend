@@ -65,10 +65,11 @@ public class UserFacadeService {
 		}
 
 		if (reqDto.role() != Role.USER && reqDto.role() != Role.MANAGER) {
-			throw new UserException(ErrorCode.INVALID_ROLE);
 			throw new BusinessException(ErrorCode.INVALID_ROLE);
 		}
 
+		if (currentUser.role() != Role.MANAGER && reqDto.role() == Role.MANAGER) {
+			throw new BusinessException(ErrorCode.ROLE_CHANGE_NOT_ALLOWED);
 		}
 
 		commandService.updateRole(userId, reqDto);

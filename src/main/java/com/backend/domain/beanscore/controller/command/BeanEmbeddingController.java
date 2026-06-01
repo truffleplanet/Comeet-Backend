@@ -1,6 +1,7 @@
 package com.backend.domain.beanscore.controller.command;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "BeanScore Admin", description = "원두 점수 관리자 API")
 @RestController
 @RequestMapping("/admin/bean-scores")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class BeanEmbeddingController {
 

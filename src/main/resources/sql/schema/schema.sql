@@ -50,6 +50,33 @@ CREATE TABLE IF NOT EXISTS stores
     FOREIGN KEY (owner_id) REFERENCES users (id)
 );
 
+CREATE TABLE IF NOT EXISTS owner_applications
+(
+    id                BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id           BIGINT         NOT NULL,
+    roastery_id       BIGINT         NOT NULL,
+    store_name        VARCHAR(100)   NOT NULL,
+    store_description TEXT,
+    store_address     VARCHAR(255)   NOT NULL,
+    latitude          DECIMAL(10, 8) NOT NULL,
+    longitude         DECIMAL(11, 8) NOT NULL,
+    opening_hours     VARCHAR(20),
+    category          VARCHAR(50),
+    phone_number      VARCHAR(20),
+    thumbnail_url     VARCHAR(500),
+    status            VARCHAR(20)    NOT NULL DEFAULT 'PENDING',
+    reject_reason     VARCHAR(500),
+    reviewed_by       BIGINT,
+    reviewed_at       TIMESTAMP,
+    created_at        TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
+    updated_at        TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_owner_applications_user_status (user_id, status),
+    INDEX idx_owner_applications_status_created (status, created_at),
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (roastery_id) REFERENCES roasteries (id),
+    FOREIGN KEY (reviewed_by) REFERENCES users (id)
+);
+
 -- Passport Table (월별 커피 여권)
 CREATE TABLE IF NOT EXISTS passports
 (
