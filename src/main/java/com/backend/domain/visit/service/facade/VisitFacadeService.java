@@ -2,6 +2,7 @@ package com.backend.domain.visit.service.facade;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.BusinessException;
@@ -27,6 +28,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class VisitFacadeService {
 	private static final int ALLOWABLE_RANGE = 100;
@@ -41,6 +43,7 @@ public class VisitFacadeService {
 
 	private final UserValidator userValidator;
 
+	@Transactional(rollbackFor = Exception.class)
 	public VerifiedResDto verifyVisit(final User user, final VerifyReqDto reqDto) {
 		userValidator.validate(user);
 		Boolean isVerified = checkDistance(reqDto);
