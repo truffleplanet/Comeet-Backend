@@ -30,6 +30,8 @@ public class Store {
 	private LocalTime closeTime;
 	private BigDecimal averageRating;
 	private Integer reviewCount;
+	private Integer ratingCount;
+	private BigDecimal ratingSum;
 	private Integer visitCount;
 	private boolean isClosed;
 	private LocalDateTime deletedAt;

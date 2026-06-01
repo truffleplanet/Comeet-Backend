@@ -101,3 +101,51 @@ DELIMITER ;
 
 CALL add_idx_visits_user_created();
 DROP PROCEDURE IF EXISTS add_idx_visits_user_created;
+
+-- 2026-06-02: 리뷰 수와 평점 통계 증분 갱신을 위한 누적 컬럼 추가
+DROP PROCEDURE IF EXISTS add_store_review_stat_columns;
+DELIMITER //
+CREATE PROCEDURE add_store_review_stat_columns()
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+          AND table_name = 'stores'
+          AND column_name = 'rating_count'
+    ) THEN
+        ALTER TABLE stores
+            ADD COLUMN rating_count INT NOT NULL DEFAULT 0 AFTER review_count;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+          AND table_name = 'stores'
+          AND column_name = 'rating_sum'
+    ) THEN
+        ALTER TABLE stores
+            ADD COLUMN rating_sum DECIMAL(10, 2) NOT NULL DEFAULT 0 AFTER rating_count;
+    END IF;
+END //
+DELIMITER ;
+
+CALL add_store_review_stat_columns();
+DROP PROCEDURE IF EXISTS add_store_review_stat_columns;
+
+UPDATE stores s
+    LEFT JOIN (
+        SELECT store_id,
+               COUNT(*)                           AS review_count,
+               COUNT(rating)                      AS rating_count,
+               COALESCE(SUM(rating), 0)           AS rating_sum,
+               COALESCE(ROUND(AVG(rating), 2), 0) AS average_rating
+        FROM reviews
+        WHERE deleted_at IS NULL
+        GROUP BY store_id
+    ) stats ON stats.store_id = s.id
+SET s.review_count = COALESCE(stats.review_count, 0),
+    s.rating_count = COALESCE(stats.rating_count, 0),
+    s.rating_sum = COALESCE(stats.rating_sum, 0),
+    s.average_rating = COALESCE(stats.average_rating, 0);

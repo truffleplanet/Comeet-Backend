@@ -87,12 +87,4 @@
         )
     </select>
 
-    <select id="findRatingStatsByStoreId" resultType="com.backend.domain.review.dto.common.StoreRatingStatsDto">
-        SELECT COALESCE(ROUND(AVG(rating), 2), 0) AS averageRating,
-               COUNT(rating)                      AS reviewCount
-        FROM reviews
-        WHERE store_id = #{storeId}
-          AND rating IS NOT NULL
-        <include refid="common.CommonSql.notDeleted"/>
-    </select>
 </mapper>

@@ -40,6 +40,8 @@ CREATE TABLE IF NOT EXISTS stores
     close_time     TIME,
     average_rating DECIMAL(3, 2)  NOT NULL DEFAULT 0,
     review_count   INT            NOT NULL DEFAULT 0,
+    rating_count   INT            NOT NULL DEFAULT 0,
+    rating_sum     DECIMAL(10, 2) NOT NULL DEFAULT 0,
     visit_count    INT            NOT NULL DEFAULT 0,
     is_closed      BOOLEAN        NOT NULL DEFAULT FALSE,
     deleted_at     TIMESTAMP,
