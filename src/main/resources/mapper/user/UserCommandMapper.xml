@@ -4,9 +4,9 @@
 
 <mapper namespace="com.backend.domain.user.mapper.command.UserCommandMapper">
 
-    <insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO users (name, email, password, profile_image_url, social_id, role, created_at, updated_at)
-        VALUES (#{user.name}, #{user.email}, #{user.password}, #{user.profileImageUrl}, #{user.socialId}, #{user.role},
+    <insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="user.id">
+        INSERT INTO users (name, email, password, nick_name, profile_image_url, social_id, role, created_at, updated_at)
+        VALUES (#{user.name}, #{user.email}, #{user.password}, #{user.nickname}, #{user.profileImageUrl}, #{user.socialId}, #{user.role},
                 NOW(), NOW())
     </insert>
     <update id="register">

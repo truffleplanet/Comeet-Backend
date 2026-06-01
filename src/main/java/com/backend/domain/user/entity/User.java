@@ -41,6 +41,22 @@ public class User {
 			.build();
 	}
 
+	public static User local(
+		final String name,
+		final String email,
+		final String password,
+		final String nickname
+	) {
+		return User.builder()
+			.name(name)
+			.email(email)
+			.password(password)
+			.nickname(nickname)
+			.socialId(email)
+			.role(Role.USER)
+			.build();
+	}
+
 	private static String generateTemporaryPassword() {
 		return UUID.randomUUID().toString();
 	}

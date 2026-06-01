@@ -1,10 +1,13 @@
 # Local 개발 환경 설정
 spring:
+  config:
+    import: optional:file:.env.local[.properties]
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URL:jdbc:mysql://localhost:3306/comeet?serverTimezone=Asia/Seoul}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
 
     hikari:
       maximum-pool-size: 10
@@ -18,13 +21,22 @@ spring:
     init:
       mode: always
       schema-locations: classpath:/sql/schema/schema.sql
+      data-locations: classpath:/sql/local/seed.sql
       continue-on-error: false
 
   data:
     redis:
-      host: localhost
-      port: 6379
-      timeout: 60000
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: ${REDIS_TIMEOUT:60000}
+
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID:local-dummy-access-key}
+        secret-key: ${AWS_SECRET_ACCESS_KEY:local-dummy-secret-key}
+      s3:
+        bucket: ${AWS_S3_BUCKET:local-dummy-bucket}
 
 logging:
   level:
@@ -38,4 +50,16 @@ logging:
 # CORS 설정 (로컬)
 cors:
   allowed-origins: http://localhost:5173,http://localhost:8080
-  oauth-redirect-url: ${OAUTH_REDIRECT_URI}
+
+jwt:
+  secret: ${JWT_SECRET:local-development-secret-key-must-be-at-least-32-bytes}
+  accessTokenExpiration: ${JWT_EXPIRATION:3600000}
+  refreshTokenExpiration: ${JWT_REFRESH_EXPIRATION:1209600000}
+
+gemini:
+  api-key: ${GEMINI_API_KEY:local-dummy-gemini-key}
+  model: ${GEMINI_AI_MODEL:gemini-2.0-flash}
+
+spring.ai:
+  openai:
+    api-key: ${OPENAI_API_KEY:local-dummy-openai-key}

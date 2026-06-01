@@ -49,6 +49,7 @@ public enum ErrorCode {
 	TOKEN_BLACKLISTED_EXCEPTION(ErrorDomain.AUTH, "TOKEN_BLACKLISTED", HttpStatus.UNAUTHORIZED, "블랙리스트에 등록된 토큰입니다."),
 	TOKEN_NOT_FOUND(ErrorDomain.AUTH, "TOKEN_NOT_FOUND", HttpStatus.NOT_FOUND, "요청으로부터 토큰을 찾지 못했습니다."),
 	REFRESH_TOKEN_NOT_MATCH(ErrorDomain.AUTH, "REFRESH_TOKEN_NOT_MATCH", HttpStatus.BAD_REQUEST, "리프레시 토큰이 일치하지 않습니다."),
+	INVALID_CREDENTIALS(ErrorDomain.AUTH, "INVALID_CREDENTIALS", HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 올바르지 않습니다."),
 	INVALID_TOKEN(ErrorDomain.AUTH, "INVALID_TOKEN", HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
 	INVALID_TOKEN_SIGNATURE(ErrorDomain.AUTH, "INVALID_TOKEN_SIGNATURE", HttpStatus.UNAUTHORIZED, "토큰 서명이 유효하지 않습니다."),
 	TOKEN_PROCESSING_ERROR(ErrorDomain.AUTH, "TOKEN_PROCESSING_ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "토큰 처리 중 오류가 발생했습니다."),

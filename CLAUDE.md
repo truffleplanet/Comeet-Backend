@@ -36,8 +36,8 @@ docker build -t comeet-backend .
 - **MyBatis 3.0.5** (XML Mapper approach, not JPA)
 - **MySQL 8.0+** for persistence
 - **Redis Stack** for caching, sessions, and vector search (recommendation system)
-- **Spring AI + OpenAI** (via GMS proxy) for embeddings and LLM reranking
-- **Spring Security** with JWT + OAuth2 (Naver login)
+- **Spring AI + OpenAI** for embeddings and LLM reranking
+- **Spring Security** with JWT
 - **AWS S3** for image storage
 
 ## Architecture Overview
@@ -50,7 +50,7 @@ The project follows a **Domain-Driven Design (DDD)** inspired layered architectu
 src/main/java/com/backend/
 ├── common/          # Shared utilities, configs, auth, error handling
 │   ├── ai/          # OpenAI/Spring AI integration for recommendations
-│   ├── auth/        # JWT, OAuth2, security principal
+│   ├── auth/        # JWT and security principal
 │   ├── config/      # Security, Redis, Web configs
 │   ├── error/       # ErrorCode enum and domain-specific exceptions
 │   ├── redis/       # Redis vector service for embeddings
@@ -111,7 +111,7 @@ Common SQL fragments are in `mapper/common/CommonSql.xml`.
 
 - Schema definition: `src/main/resources/sql/schema/schema.sql`
 - Schema changes: `src/main/resources/sql/schema/change.sql`
-- Test data: `src/main/resources/sql/test/`
+- Local seed data: `src/main/resources/sql/local/seed.sql`
 - Production data (flavors, etc.): `src/main/resources/sql/data/`
 
 ### Key Domain Relationships
@@ -206,7 +206,7 @@ The project includes an AI-powered recommendation system for coffee beans and me
 3. **LLM Reranking**: GPT-4o selects top 5 from vector search candidates with personalized reasons
 
 Key components:
-- `EmbeddingService` - Creates embeddings via OpenAI (through GMS proxy)
+- `EmbeddingService` - Creates embeddings via OpenAI
 - `RedisVectorService` - Manages vector index and similarity search
 - `LlmService` - Handles GPT-4o reranking
 - `RecommendationFacadeService` - Orchestrates the recommendation pipeline
@@ -223,8 +223,7 @@ Profiles: `local`, `dev` (set via `APP_PROFILE` env var)
 
 Required environment variables:
 - `JWT_SECRET`, `JWT_EXPIRATION`, `JWT_REFRESH_EXPIRATION` - JWT settings
-- `CLIENT_ID_NAVER`, `CLIENT_SECRET_NAVER`, `REDIRECT_URL` - Naver OAuth2
-- `GMS_KEY` - OpenAI API key (via GMS proxy)
+- `OPENAI_API_KEY` - OpenAI API key
 - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_S3_BUCKET` - S3 storage
 - Database: configured per profile in `application-{profile}.yml`
 

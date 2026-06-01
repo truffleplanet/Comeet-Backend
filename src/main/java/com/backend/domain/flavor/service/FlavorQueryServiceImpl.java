@@ -13,7 +13,7 @@ import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.flavor.entity.Flavor;
 import com.backend.domain.flavor.mapper.query.FlavorQueryMapper;
-import com.nimbusds.oauth2.sdk.util.CollectionUtils;
+import org.springframework.util.CollectionUtils;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

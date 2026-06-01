@@ -9,8 +9,8 @@ import javax.crypto.SecretKey;
 import org.springframework.stereotype.Component;
 
 import com.backend.common.auth.constants.AuthConstant;
-import com.backend.common.auth.dto.CustomOAuth2User;
 import com.backend.common.auth.dto.Token;
+import com.backend.common.auth.principal.DefaultAuthenticatedUser;
 import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.auth.redis.BlackList;
 import com.backend.common.auth.redis.repository.BlackListRepository;
@@ -138,7 +138,7 @@ public class JwtTokenProvider {
 		validateTokenType(claims, ACCESS_TOKEN);
 
 		return queryMapper.findBySocialId(claims.getSubject())
-			.map(CustomOAuth2User::new)
+			.map(DefaultAuthenticatedUser::new)
 			.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 	}
 
