@@ -10,6 +10,7 @@ import com.backend.domain.user.entity.User;
 
 @Mapper
 public interface UserQueryMapper extends QueryMapper<User> {
+	@Override
 	Optional<User> findById(@Param("userId") Long userId);
 
 	Optional<User> findByEmail(@Param("email") String email);

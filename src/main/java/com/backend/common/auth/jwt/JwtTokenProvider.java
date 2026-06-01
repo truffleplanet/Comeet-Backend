@@ -21,6 +21,7 @@ import com.backend.domain.user.mapper.query.UserQueryMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -115,7 +116,7 @@ public class JwtTokenProvider {
 			throw new BusinessException(ErrorCode.INVALID_TOKEN_SIGNATURE);
 		} catch (UnsupportedJwtException e) {
 			throw new BusinessException(ErrorCode.INVALID_TOKEN_TYPE);
-		} catch (Exception e) {
+		} catch (JwtException e) {
 			throw new BusinessException(ErrorCode.TOKEN_PROCESSING_ERROR);
 		}
 	}

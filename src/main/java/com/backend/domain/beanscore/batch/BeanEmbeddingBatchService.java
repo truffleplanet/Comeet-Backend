@@ -131,7 +131,7 @@ public class BeanEmbeddingBatchService {
 				successCount.incrementAndGet();
 
 				log.debug("[Embedding] 임베딩 저장 완료 - beanId: {}", beanScore.getBeanId());
-			} catch (Exception e) {
+			} catch (RuntimeException e) {
 				log.error("[Embedding] 임베딩 실패 - beanId: {}", beanScore.getBeanId(), e);
 				failCount.incrementAndGet();
 			}
@@ -183,7 +183,7 @@ public class BeanEmbeddingBatchService {
 			float[] embedding = embeddingService.embed(embeddingText);
 			redisVectorService.saveEmbedding(beanId, embedding);
 			log.debug("[Embedding] 임베딩 업데이트 완료 - beanId: {}", beanId);
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[Embedding] 임베딩 업데이트 실패 - beanId: {}", beanId, e);
 		}
 	}
@@ -197,7 +197,7 @@ public class BeanEmbeddingBatchService {
 		try {
 			redisVectorService.deleteEmbedding(beanId);
 			log.debug("[Embedding] 임베딩 삭제 완료 - beanId: {}", beanId);
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[Embedding] 임베딩 삭제 실패 - beanId: {}", beanId, e);
 		}
 	}
@@ -249,7 +249,7 @@ public class BeanEmbeddingBatchService {
 					redisVectorService.saveEmbedding(beanScore.getBeanId(), embedding);
 					processedCount.incrementAndGet();
 					log.debug("[Embedding] 누락 임베딩 생성 완료 - beanId: {}", beanScore.getBeanId());
-				} catch (Exception e) {
+				} catch (RuntimeException e) {
 					log.error("[Embedding] 누락 임베딩 생성 실패 - beanId: {}", beanScore.getBeanId(), e);
 				}
 			}

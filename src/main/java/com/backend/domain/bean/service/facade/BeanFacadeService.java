@@ -31,7 +31,6 @@ import com.backend.domain.flavor.entity.Flavor;
 import com.backend.domain.flavor.service.FlavorQueryService;
 import com.backend.domain.roastery.entity.Roastery;
 import com.backend.domain.roastery.service.query.RoasteryQueryService;
-import com.backend.domain.roastery.validator.RoasteryValidator;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -49,12 +48,11 @@ public class BeanFacadeService {
 	private final BeanFlavorCommandService beanFlavorCommandService;
 
 	private final BeanFactory beanFactory;
-	private final RoasteryValidator roasteryValidator;
 	private final FlavorQueryService flavorQueryService;
 
 	@Transactional
 	public BeanResDto createBean(final BeanCreateReqDto reqDto) {
-		Roastery roastery = roasteryQueryService.findById(reqDto.roasteryId());
+		roasteryQueryService.findById(reqDto.roasteryId());
 
 		Bean bean = beanFactory.create(reqDto);
 		int affectedRows = beanCommandService.insert(bean);
@@ -72,7 +70,7 @@ public class BeanFacadeService {
 	@Transactional
 	public BeanResDto updateBean(final Long beanId, final BeanUpdateReqDto reqDto) {
 		Bean existingBean = beanQueryService.findById(beanId);
-		Roastery roastery = roasteryQueryService.findById(existingBean.getRoasteryId());
+		roasteryQueryService.findById(existingBean.getRoasteryId());
 
 		Bean updatedBean = beanFactory.createForUpdate(existingBean, reqDto);
 		int affectedRows = beanCommandService.update(updatedBean);
@@ -94,7 +92,7 @@ public class BeanFacadeService {
 	@Transactional
 	public void deleteBean(final Long beanId) {
 		Bean existingBean = beanQueryService.findById(beanId);
-		Roastery roastery = roasteryQueryService.findById(existingBean.getRoasteryId());
+		roasteryQueryService.findById(existingBean.getRoasteryId());
 
 		int affectedRows = beanCommandService.softDelete(beanId);
 		if (affectedRows == 0) {

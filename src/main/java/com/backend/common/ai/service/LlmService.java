@@ -13,6 +13,7 @@ import com.backend.common.ai.dto.MenuRerankRequest;
 import com.backend.common.ai.dto.MenuRerankResponse;
 import com.backend.common.ai.dto.RerankRequest;
 import com.backend.common.ai.dto.RerankResponse;
+import com.backend.common.ai.exception.AiServiceException;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -76,9 +77,9 @@ public class LlmService {
 			log.debug("[LLM] 원두 리랭킹 응답 - {}", response);
 
 			return outputConverter.convert(response);
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[LLM] 원두 리랭킹 실패", e);
-			throw new RuntimeException("Reranking failed", e);
+			throw new AiServiceException("Bean reranking failed", e);
 		}
 	}
 
@@ -136,9 +137,9 @@ public class LlmService {
 			log.debug("[LLM] 메뉴 리랭킹 응답 - {}", response);
 
 			return outputConverter.convert(response);
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[LLM] 메뉴 리랭킹 실패", e);
-			throw new RuntimeException("Menu reranking failed", e);
+			throw new AiServiceException("Menu reranking failed", e);
 		}
 	}
 

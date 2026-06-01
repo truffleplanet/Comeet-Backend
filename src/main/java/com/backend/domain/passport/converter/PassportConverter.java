@@ -1,7 +1,5 @@
 package com.backend.domain.passport.converter;
 
-import static com.backend.domain.passport.service.calculator.PassportStatisticsCalculator.*;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +10,7 @@ import com.backend.domain.passport.dto.common.PassportSummaryDto;
 import com.backend.domain.passport.dto.response.PassportDetailResDto;
 import com.backend.domain.passport.dto.response.PassportListResDto;
 import com.backend.domain.passport.entity.Passport;
+import com.backend.domain.passport.service.calculator.PassportStatisticsCalculator.PassportStatistics;
 
 import lombok.experimental.UtilityClass;
 
@@ -23,7 +22,7 @@ public class PassportConverter {
 			.userId(userId)
 			.year(year)
 			.month(month)
-			.coverImageUrl(null) // TODO: AI 이미지 생성
+			.coverImageUrl(null) // 비동기 AI 이미지 생성 이벤트 처리 전 초기값
 			.totalCoffeeCount(stats.totalCoffeeCount())
 			.totalStoreCount(stats.totalStoreCount())
 			.totalBeanCount(stats.totalBeanCount())

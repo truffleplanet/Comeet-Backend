@@ -2,6 +2,7 @@ package com.backend.domain.ai.repository;
 
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -29,7 +30,7 @@ public class BatchProgressRepository {
 			redisTemplate.opsForValue().set(key, progress, TTL_HOURS, TimeUnit.HOURS);
 			log.debug("[Batch Progress] 저장 완료 - batchId: {}, progress: {}/{}",
 				progress.getBatchId(), progress.getCompleted().get(), progress.getTotal());
-		} catch (Exception e) {
+		} catch (DataAccessException e) {
 			log.error("[Batch Progress] 저장 실패 - batchId: {}", progress.getBatchId(), e);
 			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
@@ -44,7 +45,7 @@ public class BatchProgressRepository {
 				return batchProgress;
 			}
 			throw new BusinessException(ErrorCode.BATCH_NOT_FOUND);
-		} catch (Exception e) {
+		} catch (DataAccessException e) {
 			log.error("[Batch Progress] 조회 실패 - batchId: {}", batchId, e);
 			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
@@ -59,7 +60,7 @@ public class BatchProgressRepository {
 			String key = KEY_PREFIX + batchId;
 			redisTemplate.delete(key);
 			log.debug("[Batch Progress] 삭제 완료 - batchId: {}", batchId);
-		} catch (Exception e) {
+		} catch (DataAccessException e) {
 			log.error("[Batch Progress] 삭제 실패 - batchId: {}", batchId, e);
 		}
 	}

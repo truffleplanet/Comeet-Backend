@@ -25,7 +25,6 @@ import com.backend.domain.review.dto.common.ReviewPageDto;
 import com.backend.domain.review.dto.request.CuppingNoteReqDto;
 import com.backend.domain.review.dto.request.ReviewReqDto;
 import com.backend.domain.review.dto.response.CuppingResDto;
-import com.backend.domain.review.dto.response.ReportResDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
 import com.backend.domain.review.entity.CuppingNote;
 import com.backend.domain.review.entity.Review;
@@ -39,7 +38,6 @@ import com.backend.domain.review.service.query.CuppingNoteQueryService;
 import com.backend.domain.review.service.query.ReviewQueryService;
 import com.backend.domain.review.validator.ReviewValidator;
 import com.backend.domain.store.service.command.StoreCommandService;
-import com.backend.domain.user.entity.User;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -104,11 +102,6 @@ public class ReviewFacadeService {
 			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
 		applyDeletedReviewStats(storeId, review.getRating());
-	}
-
-	public ReportResDto reportReview(final Long reviewId, final User user) {
-		// ! 관리자 기능 구현이 선행되어야한다.
-		return null;
 	}
 
 	public ReviewedResDto getReviewDetails(final Long reviewId) {

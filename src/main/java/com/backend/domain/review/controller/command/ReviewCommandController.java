@@ -16,7 +16,6 @@ import com.backend.common.util.ResponseUtils;
 import com.backend.domain.review.dto.request.CuppingNoteReqDto;
 import com.backend.domain.review.dto.request.ReviewReqDto;
 import com.backend.domain.review.dto.response.CuppingResDto;
-import com.backend.domain.review.dto.response.ReportResDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
 import com.backend.domain.review.service.facade.ReviewFacadeService;
 
@@ -95,19 +94,6 @@ public class ReviewCommandController {
 	) {
 		reviewFacadeService.deleteReview(reviewId, token.getUser().getId());
 		return ResponseUtils.noContent();
-	}
-
-	@Deprecated(since = "1.0")
-	@Operation(
-		summary = "리뷰 신고 (미구현)",
-		description = "부적절한 리뷰를 신고합니다. 관리자 기능이 구현된 후 사용 가능합니다."
-	)
-	@PostMapping("/{reviewId}/report")
-	public ResponseEntity<BaseResponse<ReportResDto>> reportReview(
-		@PathVariable Long reviewId,
-		@CurrentUser AuthenticatedUser token
-	) {
-		return ResponseUtils.ok(reviewFacadeService.reportReview(reviewId, token.getUser()));
 	}
 
 	@Operation(

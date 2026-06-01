@@ -33,7 +33,7 @@ public class StoreConverter {
 			.thumbnailUrl(store.getThumbnailUrl())
 			.openTime(store.getOpenTime())
 			.closeTime(store.getCloseTime())
-			.openingHours(TimeUtils.formatOpeningHours(store.getOpenTime(), store.getCloseTime()))
+			.openingHours(TimeUtils.formatOpeningHours(store.getOpenTime(), store.getCloseTime()).orElse(null))
 			.averageRating(store.getAverageRating())
 			.reviewCount(store.getReviewCount())
 			.visitCount(store.getVisitCount())

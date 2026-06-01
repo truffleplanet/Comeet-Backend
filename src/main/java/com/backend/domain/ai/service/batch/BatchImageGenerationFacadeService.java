@@ -96,7 +96,7 @@ public class BatchImageGenerationFacadeService {
 				log.error("[Batch Image] 작업 중단 - userId: {}", userId, e);
 				progress.incrementFailed();
 				updateProgressInRedis(progress);
-			} catch (Exception e) {
+			} catch (RuntimeException e) {
 				log.error("[Batch Image] 작업 실패 - userId: {}", userId, e);
 				progress.incrementFailed();
 				updateProgressInRedis(progress);
@@ -120,7 +120,7 @@ public class BatchImageGenerationFacadeService {
 		} catch (BusinessException e) {
 			log.error("[Batch Image] AI 이미지 생성 실패 - userId: {}", userId, e);
 			throw e;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[Batch Image] 예상치 못한 오류 - userId: {}", userId, e);
 			throw new BusinessException(ErrorCode.AI_IMAGE_GENERATION_FAILED);
 		}

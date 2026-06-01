@@ -85,7 +85,8 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 		final HttpServletRequest request,
 		final HttpServletResponse response
 	) {
-		String refreshToken = CookieUtil.extractRefreshToken(request);
+		String refreshToken = CookieUtil.extractRefreshToken(request)
+			.orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_NOT_FOUND));
 
 		User user = jwtTokenProvider.getUser(refreshToken)
 			.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -103,7 +104,8 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 
 	@Override
 	public void reissue(final HttpServletRequest request, final HttpServletResponse response) {
-		String refreshToken = CookieUtil.extractRefreshToken(request);
+		String refreshToken = CookieUtil.extractRefreshToken(request)
+			.orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_NOT_FOUND));
 
 		if (blackListRepository.existsById(refreshToken)) {
 			throw new BusinessException(ErrorCode.TOKEN_BLACKLISTED_EXCEPTION);

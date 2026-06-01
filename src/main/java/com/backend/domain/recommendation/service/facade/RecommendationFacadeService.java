@@ -2,6 +2,7 @@ package com.backend.domain.recommendation.service.facade;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -134,35 +135,36 @@ public class RecommendationFacadeService {
 				.map(rec -> {
 					BeanScoreWithBeanDto bean = beanMap.get(rec.beanId());
 					if (bean == null) {
-						return null;
+						return Optional.<BeanRecommendationResDto>empty();
 					}
 					Double similarity = similarityMap.getOrDefault(rec.beanId(), 0.0);
-					return createBeanRecommendation(
+					return Optional.of(createBeanRecommendation(
 						bean,
 						rec.rank(),
 						similarity,
 						rec.reason(),
-						getFlavorBadges(bean.flavorTags()));
+						getFlavorBadges(bean.flavorTags())));
 				})
-				.filter(r -> r != null)
+				.flatMap(Optional::stream)
 				.toList();
 
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[Recommendation] LLM 리랭킹 실패, 벡터 검색 결과로 대체", e);
 			return vectorResults.stream()
 				.limit(FINAL_RECOMMENDATION_COUNT)
 				.map(vr -> {
 					BeanScoreWithBeanDto bean = beanMap.get(vr.beanId());
-					if (bean == null)
-						return null;
-					return createBeanRecommendation(
+					if (bean == null) {
+						return Optional.<BeanRecommendationResDto>empty();
+					}
+					return Optional.of(createBeanRecommendation(
 						bean,
 						vectorResults.indexOf(vr) + 1,
 						vr.score(),
 						"취향과 유사한 플레이버를 가진 원두입니다.",
-						getFlavorBadges(bean.flavorTags()));
+						getFlavorBadges(bean.flavorTags())));
 				})
-				.filter(r -> r != null)
+				.flatMap(Optional::stream)
 				.toList();
 		}
 	}
@@ -213,7 +215,7 @@ public class RecommendationFacadeService {
 				beanSimilarityMap.getOrDefault(menu.beanId(), 0.0),
 				reqDto.isLocal() && reqDto.hasValidLocation()
 					? recommendationQueryService.calculateDistance(menu, reqDto.latitude(),
-					reqDto.longitude())
+					reqDto.longitude()).orElse(null)
 					: null))
 			.sorted((a, b) -> Double.compare(b.similarity, a.similarity))
 			.limit(VECTOR_SEARCH_TOP_K)
@@ -260,20 +262,21 @@ public class RecommendationFacadeService {
 			return rerankResponse.recommendations().stream()
 				.map(rec -> {
 					MenuWithScore ms = menuIdToMenuMap.get(rec.menuId());
-					if (ms == null)
-						return null;
-					return createMenuRecommendation(
+					if (ms == null) {
+						return Optional.<MenuRecommendationResDto>empty();
+					}
+					return Optional.of(createMenuRecommendation(
 						ms.menu,
 						rec.rank(),
 						ms.similarity,
 						rec.reason(),
 						ms.distance,
-						getFlavorBadges(ms.menu.flavorTags()));
+						getFlavorBadges(ms.menu.flavorTags())));
 				})
-				.filter(r -> r != null)
+				.flatMap(Optional::stream)
 				.toList();
 
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[Recommendation] LLM 리랭킹 실패, 벡터 검색 결과로 대체", e);
 			return menuWithScores.stream()
 				.limit(FINAL_RECOMMENDATION_COUNT)
@@ -354,7 +357,7 @@ public class RecommendationFacadeService {
 				Double distance = null;
 				if (reqDto.isLocal() && reqDto.hasValidLocation()) {
 					distance = recommendationQueryService.calculateDistance(
-						menu, reqDto.latitude(), reqDto.longitude());
+						menu, reqDto.latitude(), reqDto.longitude()).orElse(null);
 				}
 				return createMenuRecommendation(
 					menu,
@@ -379,7 +382,7 @@ public class RecommendationFacadeService {
 
 			float[] queryEmbedding = embeddingService.embedTags(hierarchyPaths);
 			return redisVectorService.searchSimilarInBeans(queryEmbedding, beanIds, VECTOR_SEARCH_TOP_K);
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[Recommendation] 벡터 검색 실패", e);
 			return List.of();
 		}

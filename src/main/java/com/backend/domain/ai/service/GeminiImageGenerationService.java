@@ -49,7 +49,7 @@ public class GeminiImageGenerationService implements ImageGenerationService {
 		try (ResponseStream<GenerateContentResponse> responseStream =
 				 client.models.generateContentStream(geminiProperty.model(), content, config)) {
 			return responseParser.parseImageResponse(responseStream);
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.error("[AI] 이미지 생성 중 오류 발생 - prompt: {}", request.prompt(), e);
 			throw new BusinessException(ErrorCode.AI_IMAGE_GENERATION_FAILED);
 		}
