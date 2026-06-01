@@ -5,11 +5,9 @@ import org.springframework.stereotype.Service;
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.user.dto.request.UserRegisterReqDto;
-import com.backend.domain.user.dto.request.UserRoleUpdateReqDto;
 import com.backend.domain.user.dto.request.UserUpdateReqDto;
 import com.backend.domain.user.dto.response.NicknameDuplicateResDto;
 import com.backend.domain.user.dto.response.UserInfoResDto;
-import com.backend.domain.user.entity.Role;
 import com.backend.domain.user.service.command.UserCommandService;
 import com.backend.domain.user.service.query.UserQueryService;
 import com.backend.domain.user.validator.UserValidator;
@@ -54,25 +52,6 @@ public class UserFacadeService {
 		}
 
 		commandService.updateProfile(userId, reqDto);
-		return queryService.findById(userId);
-	}
-
-	public UserInfoResDto updateRole(Long userId, UserRoleUpdateReqDto reqDto) {
-		UserInfoResDto currentUser = queryService.findById(userId);
-
-		if (Role.isNotActiveUser(currentUser.role())) {
-			throw new BusinessException(ErrorCode.ROLE_CHANGE_NOT_ALLOWED);
-		}
-
-		if (reqDto.role() != Role.USER && reqDto.role() != Role.MANAGER) {
-			throw new BusinessException(ErrorCode.INVALID_ROLE);
-		}
-
-		if (currentUser.role() != Role.MANAGER && reqDto.role() == Role.MANAGER) {
-			throw new BusinessException(ErrorCode.ROLE_CHANGE_NOT_ALLOWED);
-		}
-
-		commandService.updateRole(userId, reqDto);
 		return queryService.findById(userId);
 	}
 }

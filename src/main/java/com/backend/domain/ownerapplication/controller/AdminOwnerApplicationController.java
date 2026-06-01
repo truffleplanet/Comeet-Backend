@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.common.annotation.CurrentUser;
+import com.backend.common.auth.constants.RoleAuthority;
 import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
@@ -30,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Admin Owner Application", description = "관리자 가맹점주 신청 관리 API")
 @RestController
 @RequestMapping("/admin/owner-applications")
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+@PreAuthorize(RoleAuthority.ADMIN)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 class AdminOwnerApplicationController {
 
@@ -48,8 +49,19 @@ class AdminOwnerApplicationController {
 	}
 
 	@Operation(
+		summary = "가맹점주 신청 상세 조회",
+		description = "관리자가 특정 가맹점주 신청의 상세 정보와 검토 상태를 조회합니다."
+	)
+	@GetMapping("/{applicationId}")
+	public ResponseEntity<BaseResponse<OwnerApplicationResDto>> findById(
+		@PathVariable Long applicationId
+	) {
+		return ResponseUtils.ok(ownerApplicationFacadeService.findById(applicationId));
+	}
+
+	@Operation(
 		summary = "가맹점주 신청 승인",
-		description = "관리자가 신청을 승인합니다. 승인 시 가맹점이 생성되고 신청자는 MANAGER로 승격됩니다."
+		description = "관리자가 신청을 승인합니다. 승인 시 가맹점이 생성되고 신청자는 OWNER로 승격됩니다."
 	)
 	@PostMapping("/{applicationId}/approve")
 	public ResponseEntity<BaseResponse<OwnerApplicationResDto>> approve(

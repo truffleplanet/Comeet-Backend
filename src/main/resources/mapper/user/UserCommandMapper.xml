@@ -33,7 +33,7 @@
 
     <update id="updateRole">
         UPDATE users
-        SET role       = #{reqDto.role},
+        SET role       = #{role},
             updated_at = now()
         WHERE id = #{userId}
     </update>

@@ -1,6 +1,7 @@
 package com.backend.domain.ownerapplication.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,5 +40,17 @@ class OwnerApplicationCommandController {
 	) {
 		OwnerApplicationResDto response = ownerApplicationFacadeService.apply(user.getUser().getId(), reqDto);
 		return ResponseUtils.created(response);
+	}
+
+	@Operation(
+		summary = "내 최근 가맹점주 신청 조회",
+		description = "로그인한 사용자의 가장 최근 가맹점주 신청 상태와 검토 결과를 조회합니다."
+	)
+	@GetMapping("/me/latest")
+	public ResponseEntity<BaseResponse<OwnerApplicationResDto>> findMyLatest(
+		@CurrentUser AuthenticatedUser user
+	) {
+		OwnerApplicationResDto response = ownerApplicationFacadeService.findLatestByUserId(user.getUser().getId());
+		return ResponseUtils.ok(response);
 	}
 }

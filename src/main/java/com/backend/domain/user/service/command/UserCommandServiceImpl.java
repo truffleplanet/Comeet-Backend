@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.user.dto.request.UserRegisterReqDto;
-import com.backend.domain.user.dto.request.UserRoleUpdateReqDto;
 import com.backend.domain.user.dto.request.UserUpdateReqDto;
+import com.backend.domain.user.entity.Role;
 import com.backend.domain.user.entity.User;
 import com.backend.domain.user.mapper.command.UserCommandMapper;
 import com.backend.domain.user.service.query.UserQueryService;
@@ -55,12 +55,12 @@ public class UserCommandServiceImpl implements UserCommandService {
 	}
 
 	@Override
-	public int updateRole(final Long userId, final UserRoleUpdateReqDto reqDto) {
-		int updated = commandMapper.updateRole(userId, reqDto);
+	public int updateRole(final Long userId, final Role role) {
+		int updated = commandMapper.updateRole(userId, role);
 		if (updated == 0) {
 			throw new BusinessException(ErrorCode.USER_NOT_FOUND);
 		}
-		log.info("[User] 역할 변경 완료 - userId : {}, role : {}", userId, reqDto.role());
+		log.info("[User] 역할 변경 완료 - userId : {}, role : {}", userId, role);
 		return updated;
 	}
 }

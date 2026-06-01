@@ -30,6 +30,12 @@ public class OwnerApplicationQueryServiceImpl implements OwnerApplicationQuerySe
 	}
 
 	@Override
+	public OwnerApplication findLatestByUserId(final Long userId) {
+		return queryMapper.findLatestByUserId(userId)
+			.orElseThrow(() -> new BusinessException(ErrorCode.OWNER_APPLICATION_NOT_FOUND));
+	}
+
+	@Override
 	public boolean existsPendingByUserId(final Long userId) {
 		return queryMapper.countPendingByUserId(userId) > 0;
 	}

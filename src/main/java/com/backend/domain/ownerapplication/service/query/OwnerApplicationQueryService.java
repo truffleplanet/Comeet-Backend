@@ -8,6 +8,8 @@ import com.backend.domain.ownerapplication.entity.OwnerApplicationStatus;
 public interface OwnerApplicationQueryService {
 	OwnerApplication findById(Long applicationId);
 
+	OwnerApplication findLatestByUserId(Long userId);
+
 	boolean existsPendingByUserId(Long userId);
 
 	List<OwnerApplication> findAllByStatus(OwnerApplicationStatus status);

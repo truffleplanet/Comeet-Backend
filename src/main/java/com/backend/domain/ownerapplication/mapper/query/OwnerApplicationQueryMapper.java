@@ -13,6 +13,8 @@ import com.backend.domain.ownerapplication.entity.OwnerApplicationStatus;
 public interface OwnerApplicationQueryMapper {
 	Optional<OwnerApplication> findById(@Param("applicationId") Long applicationId);
 
+	Optional<OwnerApplication> findLatestByUserId(@Param("userId") Long userId);
+
 	int countPendingByUserId(@Param("userId") Long userId);
 
 	List<OwnerApplication> findAllByStatus(@Param("status") OwnerApplicationStatus status);

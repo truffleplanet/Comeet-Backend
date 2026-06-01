@@ -15,7 +15,6 @@ import com.backend.domain.ownerapplication.entity.OwnerApplicationStatus;
 import com.backend.domain.ownerapplication.service.command.OwnerApplicationCommandService;
 import com.backend.domain.ownerapplication.service.query.OwnerApplicationQueryService;
 import com.backend.domain.store.service.facade.StoreFacadeService;
-import com.backend.domain.user.dto.request.UserRoleUpdateReqDto;
 import com.backend.domain.user.dto.response.UserInfoResDto;
 import com.backend.domain.user.entity.Role;
 import com.backend.domain.user.service.command.UserCommandService;
@@ -50,9 +49,9 @@ public class OwnerApplicationFacadeService {
 		OwnerApplication application = queryService.findById(applicationId);
 		validatePending(application);
 
-		storeFacadeService.createStore(application.toStoreCreateReqDto(), application.getUserId());
-		userCommandService.updateRole(application.getUserId(), new UserRoleUpdateReqDto(Role.MANAGER));
 		commandService.approve(applicationId, adminId);
+		storeFacadeService.createStore(application.toStoreCreateReqDto(), application.getUserId());
+		userCommandService.updateRole(application.getUserId(), Role.OWNER);
 
 		return OwnerApplicationResDto.from(queryService.findById(applicationId));
 	}
@@ -67,6 +66,16 @@ public class OwnerApplicationFacadeService {
 
 		commandService.reject(applicationId, adminId, reqDto.rejectReason());
 		return OwnerApplicationResDto.from(queryService.findById(applicationId));
+	}
+
+	@Transactional(readOnly = true)
+	public OwnerApplicationResDto findById(final Long applicationId) {
+		return OwnerApplicationResDto.from(queryService.findById(applicationId));
+	}
+
+	@Transactional(readOnly = true)
+	public OwnerApplicationResDto findLatestByUserId(final Long userId) {
+		return OwnerApplicationResDto.from(queryService.findLatestByUserId(userId));
 	}
 
 	@Transactional(readOnly = true)

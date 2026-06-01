@@ -24,7 +24,6 @@ import com.backend.domain.ownerapplication.service.command.OwnerApplicationComma
 import com.backend.domain.ownerapplication.service.query.OwnerApplicationQueryService;
 import com.backend.domain.store.dto.request.StoreCreateReqDto;
 import com.backend.domain.store.service.facade.StoreFacadeService;
-import com.backend.domain.user.dto.request.UserRoleUpdateReqDto;
 import com.backend.domain.user.dto.response.UserInfoResDto;
 import com.backend.domain.user.entity.Role;
 import com.backend.domain.user.service.command.UserCommandService;
@@ -73,11 +72,11 @@ class OwnerApplicationFacadeServiceTest {
 	}
 
 	@Test
-	@DisplayName("MANAGER는 가맹점주 신청을 생성할 수 없다")
-	void apply_Fail_ManagerCannotApply() {
+	@DisplayName("OWNER는 가맹점주 신청을 생성할 수 없다")
+	void apply_Fail_OwnerCannotApply() {
 		// given
 		Long userId = 1L;
-		when(userQueryService.findById(userId)).thenReturn(userInfo(userId, Role.MANAGER));
+		when(userQueryService.findById(userId)).thenReturn(userInfo(userId, Role.OWNER));
 
 		// when & then
 		assertThatThrownBy(() -> ownerApplicationFacadeService.apply(userId, createReqDto()))
@@ -110,7 +109,39 @@ class OwnerApplicationFacadeServiceTest {
 	}
 
 	@Test
-	@DisplayName("ADMIN 승인 시 가맹점을 생성하고 사용자를 MANAGER로 승격한다")
+	@DisplayName("관리자는 신청 상세를 조회할 수 있다")
+	void findById_Success() {
+		// given
+		Long applicationId = 10L;
+		OwnerApplication application = application(applicationId, 1L, OwnerApplicationStatus.PENDING);
+		when(queryService.findById(applicationId)).thenReturn(application);
+
+		// when
+		OwnerApplicationResDto result = ownerApplicationFacadeService.findById(applicationId);
+
+		// then
+		assertThat(result.id()).isEqualTo(applicationId);
+		assertThat(result.status()).isEqualTo(OwnerApplicationStatus.PENDING);
+	}
+
+	@Test
+	@DisplayName("사용자는 본인의 최근 신청 상태를 조회할 수 있다")
+	void findLatestByUserId_Success() {
+		// given
+		Long userId = 1L;
+		OwnerApplication application = application(10L, userId, OwnerApplicationStatus.REJECTED);
+		when(queryService.findLatestByUserId(userId)).thenReturn(application);
+
+		// when
+		OwnerApplicationResDto result = ownerApplicationFacadeService.findLatestByUserId(userId);
+
+		// then
+		assertThat(result.userId()).isEqualTo(userId);
+		assertThat(result.status()).isEqualTo(OwnerApplicationStatus.REJECTED);
+	}
+
+	@Test
+	@DisplayName("ADMIN 승인 시 가맹점을 생성하고 사용자를 OWNER로 승격한다")
 	void approve_Success() {
 		// given
 		Long applicationId = 10L;
@@ -122,19 +153,17 @@ class OwnerApplicationFacadeServiceTest {
 			.reviewedBy(adminId)
 			.build();
 		when(queryService.findById(applicationId)).thenReturn(pending, approved);
-		when(userCommandService.updateRole(eq(userId), any(UserRoleUpdateReqDto.class))).thenReturn(1);
+		when(userCommandService.updateRole(userId, Role.OWNER)).thenReturn(1);
 
 		// when
 		OwnerApplicationResDto result = ownerApplicationFacadeService.approve(applicationId, adminId);
 
 		// then
 		assertThat(result.status()).isEqualTo(OwnerApplicationStatus.APPROVED);
-		verify(storeFacadeService, times(1)).createStore(any(StoreCreateReqDto.class), eq(userId));
-		verify(userCommandService, times(1)).updateRole(
-			eq(userId),
-			argThat(reqDto -> reqDto.role() == Role.MANAGER)
-		);
-		verify(commandService, times(1)).approve(applicationId, adminId);
+		var ordered = inOrder(commandService, storeFacadeService, userCommandService);
+		ordered.verify(commandService, times(1)).approve(applicationId, adminId);
+		ordered.verify(storeFacadeService, times(1)).createStore(any(StoreCreateReqDto.class), eq(userId));
+		ordered.verify(userCommandService, times(1)).updateRole(userId, Role.OWNER);
 	}
 
 	@Test

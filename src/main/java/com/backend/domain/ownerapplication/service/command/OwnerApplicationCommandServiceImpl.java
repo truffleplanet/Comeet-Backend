@@ -31,7 +31,7 @@ public class OwnerApplicationCommandServiceImpl implements OwnerApplicationComma
 	public void approve(final Long applicationId, final Long adminId) {
 		int updated = commandMapper.approve(applicationId, adminId);
 		if (updated == 0) {
-			throw new BusinessException(ErrorCode.OWNER_APPLICATION_NOT_FOUND);
+			throw new BusinessException(ErrorCode.OWNER_APPLICATION_NOT_PENDING);
 		}
 		log.info("[OwnerApplication] 신청 승인 완료 - id: {}, adminId: {}", applicationId, adminId);
 	}
@@ -40,7 +40,7 @@ public class OwnerApplicationCommandServiceImpl implements OwnerApplicationComma
 	public void reject(final Long applicationId, final Long adminId, final String rejectReason) {
 		int updated = commandMapper.reject(applicationId, adminId, rejectReason);
 		if (updated == 0) {
-			throw new BusinessException(ErrorCode.OWNER_APPLICATION_NOT_FOUND);
+			throw new BusinessException(ErrorCode.OWNER_APPLICATION_NOT_PENDING);
 		}
 		log.info("[OwnerApplication] 신청 거절 완료 - id: {}, adminId: {}", applicationId, adminId);
 	}
