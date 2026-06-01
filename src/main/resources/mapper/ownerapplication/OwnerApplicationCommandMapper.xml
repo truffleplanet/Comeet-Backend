@@ -12,6 +12,9 @@
                                         store_address,
                                         latitude,
                                         longitude,
+                                        business_registration_number,
+                                        representative_name,
+                                        business_license_url,
                                         opening_hours,
                                         category,
                                         phone_number,
@@ -26,6 +29,9 @@
                 #{application.storeAddress},
                 #{application.latitude},
                 #{application.longitude},
+                #{application.businessRegistrationNumber},
+                #{application.representativeName},
+                #{application.businessLicenseUrl},
                 #{application.openingHours},
                 #{application.category},
                 #{application.phoneNumber},
@@ -55,5 +61,22 @@
         WHERE id = #{applicationId}
           AND status = 'PENDING'
     </update>
+
+    <insert id="saveReviewHistory">
+        INSERT INTO owner_application_review_histories (
+            application_id,
+            reviewer_id,
+            status,
+            comment,
+            created_at
+        )
+        VALUES (
+            #{applicationId},
+            #{reviewerId},
+            #{status},
+            #{comment},
+            NOW()
+        )
+    </insert>
 
 </mapper>

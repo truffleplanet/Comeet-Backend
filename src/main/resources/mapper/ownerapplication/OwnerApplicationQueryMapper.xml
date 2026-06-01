@@ -10,6 +10,14 @@
         WHERE id = #{applicationId}
     </select>
 
+    <select id="findLatestByUserId" resultType="OwnerApplication">
+        SELECT *
+        FROM owner_applications
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC, id DESC
+        LIMIT 1
+    </select>
+
     <select id="countPendingByUserId" resultType="int">
         SELECT COUNT(*)
         FROM owner_applications
@@ -26,6 +34,13 @@
             </if>
         </where>
         ORDER BY created_at DESC
+    </select>
+
+    <select id="findReviewHistoriesByApplicationId" resultType="OwnerApplicationReviewHistory">
+        SELECT *
+        FROM owner_application_review_histories
+        WHERE application_id = #{applicationId}
+        ORDER BY created_at DESC, id DESC
     </select>
 
 </mapper>

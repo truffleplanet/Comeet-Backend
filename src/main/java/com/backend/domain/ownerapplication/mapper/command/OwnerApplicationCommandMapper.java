@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.backend.domain.ownerapplication.entity.OwnerApplication;
+import com.backend.domain.ownerapplication.entity.OwnerApplicationStatus;
 
 @Mapper
 public interface OwnerApplicationCommandMapper {
@@ -15,5 +16,12 @@ public interface OwnerApplicationCommandMapper {
 		@Param("applicationId") Long applicationId,
 		@Param("adminId") Long adminId,
 		@Param("rejectReason") String rejectReason
+	);
+
+	void saveReviewHistory(
+		@Param("applicationId") Long applicationId,
+		@Param("reviewerId") Long reviewerId,
+		@Param("status") OwnerApplicationStatus status,
+		@Param("comment") String comment
 	);
 }

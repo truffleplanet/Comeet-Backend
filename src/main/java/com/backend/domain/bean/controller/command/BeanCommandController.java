@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.common.auth.constants.RoleAuthority;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.bean.dto.request.BeanCreateReqDto;
@@ -38,9 +39,9 @@ public class BeanCommandController {
 
 	@Operation(
 		summary = "원두 생성",
-		description = "새로운 원두를 등록합니다. MANAGER 권한이 필요합니다."
+		description = "새로운 원두를 등록합니다. OWNER 권한이 필요합니다."
 	)
-	@PreAuthorize("hasRole('ROLE_MANAGER')")
+	@PreAuthorize(RoleAuthority.OWNER)
 	@PostMapping
 	public ResponseEntity<BaseResponse<BeanResDto>> createBean(
 		@RequestBody @Valid BeanCreateReqDto reqDto
@@ -50,9 +51,9 @@ public class BeanCommandController {
 
 	@Operation(
 		summary = "원두 수정",
-		description = "원두 정보를 수정합니다. MANAGER 권한이 필요합니다."
+		description = "원두 정보를 수정합니다. OWNER 권한이 필요합니다."
 	)
-	@PreAuthorize("hasRole('ROLE_MANAGER')")
+	@PreAuthorize(RoleAuthority.OWNER)
 	@PatchMapping("/{beanId}")
 	public ResponseEntity<BaseResponse<BeanResDto>> updateBean(
 		@PathVariable Long beanId,
@@ -63,9 +64,9 @@ public class BeanCommandController {
 
 	@Operation(
 		summary = "원두 삭제",
-		description = "원두를 삭제(Soft Delete)합니다. MANAGER 권한이 필요합니다."
+		description = "원두를 삭제(Soft Delete)합니다. OWNER 권한이 필요합니다."
 	)
-	@PreAuthorize("hasRole('ROLE_MANAGER')")
+	@PreAuthorize(RoleAuthority.OWNER)
 	@DeleteMapping("/{beanId}")
 	public ResponseEntity<BaseResponse<Void>> deleteBean(
 		@PathVariable Long beanId
@@ -76,9 +77,9 @@ public class BeanCommandController {
 
 	@Operation(
 		summary = "원두-플레이버 매핑 추가",
-		description = "원두에 플레이버를 추가 매핑합니다. MANAGER 권한이 필요합니다."
+		description = "원두에 플레이버를 추가 매핑합니다. OWNER 권한이 필요합니다."
 	)
-	@PreAuthorize("hasRole('ROLE_MANAGER')")
+	@PreAuthorize(RoleAuthority.OWNER)
 	@PostMapping("/{beanId}/flavors")
 	public ResponseEntity<BaseResponse<BeanFlavorResDto>> addBeanFlavors(
 		@PathVariable Long beanId,
@@ -89,9 +90,9 @@ public class BeanCommandController {
 
 	@Operation(
 		summary = "원두-플레이버 매핑 전체 교체",
-		description = "원두의 플레이버 매핑을 전체 교체합니다. 기존 매핑을 삭제하고 새로운 매핑으로 대체합니다. MANAGER 권한이 필요합니다."
+		description = "원두의 플레이버 매핑을 전체 교체합니다. 기존 매핑을 삭제하고 새로운 매핑으로 대체합니다. OWNER 권한이 필요합니다."
 	)
-	@PreAuthorize("hasRole('ROLE_MANAGER')")
+	@PreAuthorize(RoleAuthority.OWNER)
 	@PutMapping("/{beanId}/flavors")
 	public ResponseEntity<BaseResponse<BeanFlavorResDto>> updateBeanFlavors(
 		@PathVariable Long beanId,
@@ -102,9 +103,9 @@ public class BeanCommandController {
 
 	@Operation(
 		summary = "원두-플레이버 매핑 전체 삭제",
-		description = "원두의 플레이버 매핑을 전체 삭제합니다. MANAGER 권한이 필요합니다."
+		description = "원두의 플레이버 매핑을 전체 삭제합니다. OWNER 권한이 필요합니다."
 	)
-	@PreAuthorize("hasRole('ROLE_MANAGER')")
+	@PreAuthorize(RoleAuthority.OWNER)
 	@DeleteMapping("/{beanId}/flavors")
 	public ResponseEntity<BaseResponse<Void>> deleteBeanFlavors(
 		@PathVariable Long beanId

@@ -12,7 +12,6 @@ import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.user.dto.request.UserRegisterReqDto;
-import com.backend.domain.user.dto.request.UserRoleUpdateReqDto;
 import com.backend.domain.user.dto.request.UserUpdateReqDto;
 import com.backend.domain.user.dto.response.UserInfoResDto;
 import com.backend.domain.user.service.facade.UserFacadeService;
@@ -57,16 +56,4 @@ public class UserCommandController {
 		return ResponseUtils.ok(response);
 	}
 
-	@Operation(
-		summary = "사용자 역할 변경",
-		description = "사용자의 역할을 변경합니다. USER와 MANAGER 간 변경만 가능합니다."
-	)
-	@PutMapping("/role")
-	public ResponseEntity<BaseResponse<UserInfoResDto>> updateRole(
-		@CurrentUser final AuthenticatedUser token,
-		@RequestBody @Valid final UserRoleUpdateReqDto reqDto
-	) {
-		UserInfoResDto response = userFacadeService.updateRole(token.getUser().getId(), reqDto);
-		return ResponseUtils.ok(response);
-	}
 }

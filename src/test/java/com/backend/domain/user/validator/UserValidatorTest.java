@@ -26,10 +26,10 @@ class UserValidatorTest {
 	}
 
 	@Test
-	@DisplayName("회원 등록 시 MANAGER 역할은 허용하지 않는다")
-	void validateRegister_Fail_ManagerRole() {
+	@DisplayName("회원 등록 시 OWNER 역할은 허용하지 않는다")
+	void validateRegister_Fail_OwnerRole() {
 		// given
-		UserRegisterReqDto reqDto = new UserRegisterReqDto("tester", Role.MANAGER);
+		UserRegisterReqDto reqDto = new UserRegisterReqDto("tester", Role.OWNER);
 
 		// when & then
 		assertThatThrownBy(() -> userValidator.validate(reqDto))

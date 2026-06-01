@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.BusinessException;
 import com.backend.domain.ownerapplication.entity.OwnerApplication;
+import com.backend.domain.ownerapplication.entity.OwnerApplicationReviewHistory;
 import com.backend.domain.ownerapplication.entity.OwnerApplicationStatus;
 import com.backend.domain.ownerapplication.mapper.query.OwnerApplicationQueryMapper;
 
@@ -30,6 +31,12 @@ public class OwnerApplicationQueryServiceImpl implements OwnerApplicationQuerySe
 	}
 
 	@Override
+	public OwnerApplication findLatestByUserId(final Long userId) {
+		return queryMapper.findLatestByUserId(userId)
+			.orElseThrow(() -> new BusinessException(ErrorCode.OWNER_APPLICATION_NOT_FOUND));
+	}
+
+	@Override
 	public boolean existsPendingByUserId(final Long userId) {
 		return queryMapper.countPendingByUserId(userId) > 0;
 	}
@@ -39,5 +46,16 @@ public class OwnerApplicationQueryServiceImpl implements OwnerApplicationQuerySe
 		List<OwnerApplication> applications = queryMapper.findAllByStatus(status);
 		log.debug("[OwnerApplication] 신청 목록 조회 - status: {}, count: {}", status, applications.size());
 		return applications;
+	}
+
+	@Override
+	public List<OwnerApplicationReviewHistory> findReviewHistoriesByApplicationId(final Long applicationId) {
+		List<OwnerApplicationReviewHistory> histories = queryMapper.findReviewHistoriesByApplicationId(applicationId);
+		log.debug(
+			"[OwnerApplication] 검토 이력 조회 - applicationId: {}, count: {}",
+			applicationId,
+			histories.size()
+		);
+		return histories;
 	}
 }

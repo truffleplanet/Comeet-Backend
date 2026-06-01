@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.common.annotation.CurrentUser;
+import com.backend.common.auth.constants.RoleAuthority;
 import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.response.PageResponse;
@@ -107,10 +108,10 @@ class StoreQueryController {
 
 	@Operation(
 		summary = "내 가맹점 목록 조회",
-		description = "로그인한 사용자가 소유한 가맹점 목록을 조회합니다. (OWNER 권한 필요)"
+		description = "로그인한 사용자가 소유한 가맹점 목록을 조회합니다. OWNER(가맹점주) 권한이 필요합니다."
 	)
 	@GetMapping("/my")
-	@PreAuthorize("hasRole('ROLE_MANAGER')")
+	@PreAuthorize(RoleAuthority.OWNER)
 	public ResponseEntity<BaseResponse<List<StoreDetailResDto>>> getMyStores(
 		@CurrentUser AuthenticatedUser user
 	) {

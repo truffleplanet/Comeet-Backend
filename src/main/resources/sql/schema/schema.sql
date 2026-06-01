@@ -63,6 +63,9 @@ CREATE TABLE IF NOT EXISTS owner_applications
     store_address     VARCHAR(255)   NOT NULL,
     latitude          DECIMAL(10, 8) NOT NULL,
     longitude         DECIMAL(11, 8) NOT NULL,
+    business_registration_number VARCHAR(20)  NOT NULL,
+    representative_name          VARCHAR(100) NOT NULL,
+    business_license_url         VARCHAR(500) NOT NULL,
     opening_hours     VARCHAR(20),
     category          VARCHAR(50),
     phone_number      VARCHAR(20),
@@ -71,13 +74,30 @@ CREATE TABLE IF NOT EXISTS owner_applications
     reject_reason     VARCHAR(500),
     reviewed_by       BIGINT,
     reviewed_at       TIMESTAMP,
+    pending_user_id   BIGINT GENERATED ALWAYS AS (
+        CASE WHEN status = 'PENDING' THEN user_id ELSE NULL END
+    ) STORED,
     created_at        TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_owner_applications_user_status (user_id, status),
     INDEX idx_owner_applications_status_created (status, created_at),
+    UNIQUE KEY uk_owner_applications_pending_user (pending_user_id),
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (roastery_id) REFERENCES roasteries (id),
     FOREIGN KEY (reviewed_by) REFERENCES users (id)
+);
+
+CREATE TABLE IF NOT EXISTS owner_application_review_histories
+(
+    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    application_id BIGINT       NOT NULL,
+    reviewer_id    BIGINT       NOT NULL,
+    status         VARCHAR(20)  NOT NULL,
+    comment        VARCHAR(500),
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_owner_application_histories_application (application_id, created_at),
+    FOREIGN KEY (application_id) REFERENCES owner_applications (id),
+    FOREIGN KEY (reviewer_id) REFERENCES users (id)
 );
 
 -- Passport Table (월별 커피 여권)
