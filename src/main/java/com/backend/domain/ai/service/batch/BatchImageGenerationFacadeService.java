@@ -138,7 +138,7 @@ public class BatchImageGenerationFacadeService {
 			return String.format(passportImagePrompt.getContentAsString(StandardCharsets.UTF_8),
 				passport.getOriginSequence());
 		} catch (IOException e) {
-			throw new BusinessException(ErrorCode.USER_PROMPT_REQUIRED);
+			throw new BusinessException(ErrorCode.AI_IMAGE_GENERATION_FAILED);
 		}
 	}
 

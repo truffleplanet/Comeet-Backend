@@ -17,13 +17,13 @@ public class BeanValidator implements Validator<Bean> {
 
 	private void validateNotNull(final Bean bean) {
 		if (bean == null) {
-			throw new BusinessException(ErrorCode.INVALID_BEAN_REQUEST);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
 	private void validateCountry(final String country) {
 		if (country == null || country.isBlank()) {
-			throw new BusinessException(ErrorCode.BEAN_COUNTRY_REQUIRED);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 

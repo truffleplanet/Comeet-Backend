@@ -13,10 +13,10 @@ public record GeneratedImage(
 ) {
 	public GeneratedImage {
 		if (data == null || data.length == 0) {
-			throw new BusinessException(ErrorCode.AI_IMAGE_DATA_EMPTY);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 		if (mimeType == null || mimeType.isBlank()) {
-			throw new BusinessException(ErrorCode.AI_MIME_TYPE_EMPTY);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 

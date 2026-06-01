@@ -34,7 +34,7 @@ public class BookmarkValidator implements Validator<BookmarkFolder> {
 
 	public void validateName(final String name) {
 		if (name == null || name.isBlank()) {
-			throw new BusinessException(ErrorCode.BOOKMARK_FOLDER_NAME_REQUIRED);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 

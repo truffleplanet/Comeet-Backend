@@ -39,7 +39,7 @@ public class FlavorQueryServiceImpl implements FlavorQueryService {
 	@Override
 	public List<Flavor> findFlavorsByReviewId(final Long reviewId) {
 		if (reviewId == null) {
-			throw new BusinessException(ErrorCode.INVALID_REVIEW_REQUEST);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 		List<Flavor> flavors = queryMapper.findAllByReviewId(reviewId);
 		log.info("[Review] Flavor 조회 완료 - review ID: {}, 조회성공: {}건", reviewId, flavors.size());

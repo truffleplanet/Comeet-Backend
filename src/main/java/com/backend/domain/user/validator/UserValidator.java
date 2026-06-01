@@ -31,10 +31,10 @@ public class UserValidator implements Validator<User> {
 
 	public void validateNickname(final String nickname) {
 		if (nickname == null || nickname.isBlank()) {
-			throw new BusinessException(ErrorCode.NICKNAME_NOT_BLANK);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 		if (!nickname.matches(NICKNAME_REGEX)) {
-			throw new BusinessException(ErrorCode.NICKNAME_INVALID_FORMAT);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 

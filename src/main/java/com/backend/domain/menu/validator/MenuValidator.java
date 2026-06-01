@@ -23,28 +23,28 @@ public class MenuValidator implements Validator<Menu> {
 
 	private void validateNotNull(final Menu menu) {
 		if (menu == null) {
-			throw new BusinessException(ErrorCode.MENU_ID_REQUIRED);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
 	private void validateName(final String name) {
 		if (name == null || name.isBlank()) {
-			throw new BusinessException(ErrorCode.MENU_NAME_REQUIRED);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
 	private void validatePrice(final Integer price) {
 		if (price == null) {
-			throw new BusinessException(ErrorCode.MENU_PRICE_REQUIRED);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 		if (price <= 0) {
-			throw new BusinessException(ErrorCode.MENU_PRICE_REQUIRED);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
 	private void validateCategory(final Object category) {
 		if (category == null) {
-			throw new BusinessException(ErrorCode.MENU_CATEGORY_REQUIRED);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 

@@ -17,13 +17,13 @@ public class RoasteryValidator implements Validator<Roastery> {
 
 	private void validateNotNull(final Roastery roastery) {
 		if (roastery == null) {
-			throw new BusinessException(ErrorCode.INVALID_ROASTERY_REQUEST);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
 	private void validateName(final String name) {
 		if (name == null || name.isBlank()) {
-			throw new BusinessException(ErrorCode.ROASTERY_NAME_REQUIRED);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 }

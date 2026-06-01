@@ -16,7 +16,7 @@ public class ReviewValidator implements Validator<Review> {
 
 	private void validateNotNull(final Review review) {
 		if (review == null) {
-			throw new BusinessException(ErrorCode.INVALID_REVIEW_REQUEST);
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
