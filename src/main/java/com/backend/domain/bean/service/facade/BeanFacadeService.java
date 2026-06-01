@@ -29,6 +29,8 @@ import com.backend.domain.flavor.converter.FlavorConverter;
 import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
 import com.backend.domain.flavor.entity.Flavor;
 import com.backend.domain.flavor.service.FlavorQueryService;
+import com.backend.common.redis.service.RedisVectorService;
+import com.backend.domain.beanscore.batch.BeanEmbeddingBatchService;
 import com.backend.domain.roastery.entity.Roastery;
 import com.backend.domain.roastery.service.query.RoasteryQueryService;
 
@@ -46,6 +48,8 @@ public class BeanFacadeService {
 	private final RoasteryQueryService roasteryQueryService;
 	private final BeanFlavorQueryService beanFlavorQueryService;
 	private final BeanFlavorCommandService beanFlavorCommandService;
+	private final BeanEmbeddingBatchService beanEmbeddingBatchService;
+	private final RedisVectorService redisVectorService;
 
 	private final BeanFactory beanFactory;
 	private final FlavorQueryService flavorQueryService;
@@ -63,6 +67,8 @@ public class BeanFacadeService {
 		if (!CollectionUtils.isEmpty(reqDto.flavorIds())) {
 			beanFlavorCommandService.insertBeanFlavors(bean.getId(), reqDto.flavorIds());
 		}
+
+		beanEmbeddingBatchService.updateEmbedding(bean.getId());
 
 		return buildBeanResDto(bean);
 	}
@@ -86,6 +92,8 @@ public class BeanFacadeService {
 			}
 		}
 
+		beanEmbeddingBatchService.updateEmbedding(beanId);
+
 		return buildBeanResDto(updatedBean);
 	}
 
@@ -98,6 +106,8 @@ public class BeanFacadeService {
 		if (affectedRows == 0) {
 			throw new BusinessException(ErrorCode.DATABASE_ERROR);
 		}
+
+		redisVectorService.deleteEmbedding(beanId);
 	}
 
 	public BeanResDto getBean(final Long beanId) {
