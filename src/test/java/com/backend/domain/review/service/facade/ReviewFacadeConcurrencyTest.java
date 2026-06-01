@@ -32,10 +32,10 @@ import com.backend.domain.review.service.query.ReviewQueryService;
 class ReviewFacadeConcurrencyTest {
 
 	private static final long TEST_USER_ID = 1L;
-	private static final long TEST_ROASTERY_ID = 9_100_001L;
-	private static final long TEST_STORE_ID = 9_100_001L;
-	private static final long TEST_VISIT_ID = 9_100_001L;
-	private static final long TEST_MENU_ID = 9_100_001L;
+	private static final long TEST_ROASTERY_ID = 9_910_001L;
+	private static final long TEST_STORE_ID = 9_910_001L;
+	private static final long TEST_VISIT_ID = 9_910_001L;
+	private static final long TEST_MENU_ID = 9_910_001L;
 
 	@Autowired
 	private ReviewFacadeService reviewFacadeService;

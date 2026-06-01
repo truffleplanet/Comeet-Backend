@@ -79,7 +79,7 @@ class ReviewFacadeTransactionTest {
 	void createReview_RollsBack_WhenStoreStatisticsUpdateFails() {
 		doThrow(new RuntimeException("intentional rollback probe"))
 			.when(storeCommandService)
-			.updateRatingStats(anyLong(), any(BigDecimal.class), anyInt());
+			.applyReviewStatsDelta(anyLong(), anyInt(), anyInt(), any(BigDecimal.class));
 
 		ReviewReqDto reqDto = new ReviewReqDto(
 			TEST_VISIT_ID,
