@@ -5,9 +5,11 @@ import java.sql.SQLException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -43,6 +45,22 @@ public class GlobalExceptionHandler {
 		LoggingUtil.logValidationException(ex, request);
 		ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT, request);
 		response.addValidationErrors(ex.getBindingResult());
+		return ResponseEntity.status(ErrorCode.INVALID_INPUT.getHttpStatus()).body(BaseResponse.fail(response));
+	}
+
+	@ExceptionHandler({
+		MethodArgumentTypeMismatchException.class,
+		HttpMessageNotReadableException.class,
+		IllegalArgumentException.class
+	})
+	public ResponseEntity<BaseResponse<ErrorResponse>> handleInvalidInput(Exception ex, HttpServletRequest request) {
+		log.warn(
+			"Invalid input - request: [{} {}], message: {}",
+			request.getMethod(),
+			request.getRequestURI(),
+			ex.getMessage()
+		);
+		ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT, request);
 		return ResponseEntity.status(ErrorCode.INVALID_INPUT.getHttpStatus()).body(BaseResponse.fail(response));
 	}
 

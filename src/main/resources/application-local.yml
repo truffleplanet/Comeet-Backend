@@ -63,3 +63,6 @@ gemini:
 spring.ai:
   openai:
     api-key: ${OPENAI_API_KEY:local-dummy-openai-key}
+
+sqids:
+  alphabet: ${SQIDS_ALPHABET:6TbE5dROWeyYXvB21jtrwkcHqxmIDlizn8VQS4s9f0apCLFUZKAJNMog3P7Guh}
