@@ -44,9 +44,7 @@ public class StoreConverter {
 	public static StoreResDto toStoreResponse(final Store store, final Double distanceKm) {
 		return StoreResDto.builder()
 			.id(store.getId())
-			.roasteryId(store.getRoasteryId())
 			.name(store.getName())
-			.description(store.getDescription())
 			.address(store.getAddress())
 			.latitude(store.getLatitude())
 			.longitude(store.getLongitude())
@@ -54,7 +52,7 @@ public class StoreConverter {
 			.averageRating(store.getAverageRating())
 			.reviewCount(store.getReviewCount())
 			.visitCount(store.getVisitCount())
-			.thumbnailUrl(store.getThumbnailUrl())
+			.isClosed(store.isClosed())
 			.distance(GeoUtils.convertKmToMeters(distanceKm))
 			.build();
 	}
