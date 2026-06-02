@@ -79,6 +79,9 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.1'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+    // Sqids for ID Obfuscation
+    implementation 'org.sqids:sqids:0.1.0'
+
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.5'

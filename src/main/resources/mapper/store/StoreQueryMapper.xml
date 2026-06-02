@@ -5,7 +5,17 @@
 <mapper namespace="com.backend.domain.store.mapper.query.StoreQueryMapper">
 
     <select id="findStoresWithinBounds" resultType="Store">
-        SELECT *
+        SELECT
+            id,
+            name,
+            address,
+            latitude,
+            longitude,
+            category,
+            average_rating,
+            review_count,
+            visit_count,
+            is_closed
         FROM stores
         WHERE latitude BETWEEN #{boundsVo.minLatitude} AND #{boundsVo.maxLatitude}
         AND longitude BETWEEN #{boundsVo.minLongitude} AND #{boundsVo.maxLongitude}
